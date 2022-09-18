@@ -7,7 +7,7 @@ const BrandSchema = new Schema({
 
 BrandSchema.virtual('url').get(function () {
   // We don't use an arrow function as we'll need the this object
-  return `/${this.name}`;
+  return `/brands/${this.name}`;
 });
 
 module.exports = mongoose.model('Brand', BrandSchema);

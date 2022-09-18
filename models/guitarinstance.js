@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const GuitarinstanceSchema = new Schema({
-  guitar: { type: Schema.Types.ObjectId, ref: 'Guitar', required: true },
+  series: { type: String, required: true },
   color: {
     type: String,
     required: true,
@@ -18,12 +18,14 @@ const GuitarinstanceSchema = new Schema({
     ],
   },
   price: { type: Number, required: true },
-  serialNum: { type: Number, required: true },
+  brand: { type: String, required: true },
+  serialNum: { type: String, required: true },
+  model: { type: String, required: true },
 });
 
 GuitarinstanceSchema.virtual('url').get(function () {
   // We don't use an arrow function as we'll need the this object
-  return `/${this.brand}/view/${this.serialNum}`;
+  return `/brands/${this.brand}/${this.model}/${this.series}/${this.serialNum}`;
 });
 
 module.exports = mongoose.model('Guitarinstance', GuitarinstanceSchema);

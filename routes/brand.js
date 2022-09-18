@@ -24,7 +24,10 @@ router.get('/', brandController.brand_list);
 // // Post request to update a brand
 // router.post('/brands/:id/update', brandController.brand_update_post);
 
-// // Get request for one brand
-// router.get('/:id', brandController.brand_detail);
+// Get request for one brand
+router.get('/:name', brandController.brand_detail);
+
+// Get request for one model
+router.get('/:brand/:model', brandController.brand_model_detail);
 
 module.exports = router;

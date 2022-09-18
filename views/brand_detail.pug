@@ -1,0 +1,17 @@
+extends layout 
+
+block content
+  h1= title
+  h2= 'Models'
+  ul
+    each guitar in guitarModels
+      li 
+        a(href=guitar.url) #{guitar.model}
+    else 
+      li The are no guitars
+
+  h2= `All ` +  title
+  ul
+    each instance in guitarInstance
+      li 
+        a(href=instance.url) #{instance.series}
