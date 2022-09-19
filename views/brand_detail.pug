@@ -3,20 +3,22 @@ extends layout
 block content
   div
     a(href='/brands') #{'Brands'}
-    span= ' > ' + guitarModels[0].brand
+    span= ' > ' + brand
 
   h1= title
   h2= 'Models'
   ul
     each guitar in guitarModels
-      li 
-        a(href=guitar.url) #{guitar.model}
+        li 
+            a(href=guitar.url) #{guitar.model}
     else 
-      li The are no guitars
+        li= 'No Models'
 
   h2= `All ` +  title
   ul
     each instance in guitarInstance
-      li 
-        a(href=instance.url) #{instance.series}
-        span= ` - Color: ${instance.color}, Price:  $${instance.price}`
+        li 
+            a(href=instance.url) #{instance.series}
+            span= ` - Color: ${instance.color}, Price:  $${instance.price}`
+    else 
+      li= 'None in Stock'
