@@ -1,0 +1,18 @@
+extends layout 
+block content 
+
+  h1= title 
+  form(method='POST' action='')
+    div
+      
+      label(for='name') Name*:
+      input#name(type='text', placeholder='Name of brand' name='name' maxlength='100' required='true' value=(undefined===brand ? '' : brand))
+    div  
+      label(for='about') About: 
+      textarea#name(type='text', placeholder='About the brand' name='about' value=(undefined===about ? '' : about))
+    button(type='submit') Add
+
+  if errors 
+    ul
+      for error in errors 
+        li!= error.msg

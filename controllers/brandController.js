@@ -38,6 +38,7 @@ exports.brand_detail = async function (req, res, next) {
   // Successful
   res.render('brand_detail', {
     title: req.params.name + ' Guitars',
+    brand: req.params.name,
     guitarModels: guitarInfo,
     guitarInstance: allGuitars,
   });
@@ -165,3 +166,55 @@ exports.brand_model_series_instance_detail = function (req, res, next) {
   };
   getInfo();
 };
+
+// Page for creating a new brand
+exports.brand_create_get = function (req, res, next) {
+  res.render('brand_form', { title: 'Add a Brand' });
+};
+
+// Handle create Brand on POST
+exports.brand_create_post = [
+  // Sanitize and validate the name field
+  body('name', 'Brand name required').trim().isLength({ min: 1 }).escape(),
+  body('about').escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    console.log('inside');
+    const brand = new Brand({
+      _id: req.body.name,
+      name: req.body.name,
+      about: req.body.about,
+    });
+
+    if (!errors.isEmpty()) {
+      // Handle Errors
+      console.log('error');
+      res.render('brand_form', {
+        title: 'Add a Brand',
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      // Check if the brand already exists
+      Brand.findOne({ _id: req.body.name }).exec((err, found_brand) => {
+        if (err) {
+          return next(err);
+        }
+
+        if (found_brand) {
+          // Redirect to the brand page
+          res.redirect(found_brand.url);
+        } else {
+          brand.save((err) => {
+            if (err) {
+              return next(err);
+            }
+            // Brand save, redirect to new brand page
+            console.log('saved');
+            res.redirect(brand.url);
+          });
+        }
+      });
+    }
+  },
+];
