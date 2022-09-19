@@ -1,0 +1,46 @@
+extends layout 
+
+block content
+  div
+    a(href='/brands') #{'Brands'}
+    span= ' > '
+    a(href=brand.url) #{brand.name}
+    span= ' > '
+    a(href=modelInfo.url) #{model}
+    span= ' > '
+    a(href=seriesInfo.url) #{seriesInfo.series}
+    span= ' >  Serial: ' + guitar.serialNum
+
+  h1= title
+  h3= 'This Guitar'
+  ul
+    li= 'Color: ' + guitar.color
+    li= 'Price: $' + guitar.price
+    li= 'Serial: ' + guitar.serialNum
+
+  h3= title + ' Details:'
+
+  if (seriesInfo.description)
+    div 
+        h3= 'Description:'
+        p= seriesInfo.description
+  
+  if (seriesInfo.features)
+    div 
+        h3= 'Features:'
+        ul 
+        each feature in seriesInfo.features 
+            li= feature
+
+  if (seriesInfo.colors)
+    div
+        h3= 'Colors:'
+        ul
+        each color in seriesInfo.colors 
+            li= color
+  if (lowPrice)
+    div 
+      h3= 'Price: '
+      p= 'From $' + lowPrice
+
+    

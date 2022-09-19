@@ -33,4 +33,10 @@ router.get('/:brand/:model', brandController.brand_model_detail);
 // Get request for one brand->model->series
 router.get('/:brand/:model/:series', brandController.brand_model_series_detail);
 
+// Get request for instance brand->model->series -> instance
+router.get(
+  '/:brand/:model/:series/:serial',
+  brandController.brand_model_series_instance_detail
+);
+
 module.exports = router;

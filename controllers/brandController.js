@@ -117,3 +117,51 @@ exports.brand_model_series_detail = function (req, res, next) {
   };
   getInfo();
 };
+
+// Page for the guitar instance
+exports.brand_model_series_instance_detail = function (req, res, next) {
+  const getInfo = async () => {
+    try {
+      const brand = await Brand.findOne({ name: req.params.brand });
+      const guitarModel = await Guitar.findOne({
+        model: req.params.model,
+      });
+      const guitarSeries = await Series.find({ series: req.params.series });
+      const guitar = await Guitarinstance.findOne({
+        serialNum: req.params.serial,
+      });
+
+      const guitars = await Guitarinstance.find({ series: req.params.series });
+
+      if (!brand | !guitarModel | !guitarSeries | !guitar) {
+        const err = new Error('Not found');
+        err.status = 404;
+        return next(err);
+      }
+
+      let lowestPrice = null;
+
+      guitars.forEach((guitar) => {
+        if (!lowestPrice) {
+          lowestPrice = guitar.price;
+        } else if (guitar.price < lowestPrice) {
+          lowestPrice = guitar.price;
+        }
+      });
+
+      res.render('brand_series_instance_detail', {
+        title: req.params.brand + ' ' + req.params.series,
+        model: req.params.model,
+        guitar: guitar,
+        seriesInfo: guitarSeries[0],
+        brand: brand,
+        modelInfo: guitarModel,
+        lowPrice: lowestPrice,
+      });
+    } catch (err) {
+      console.log('error');
+      return next(err);
+    }
+  };
+  getInfo();
+};
