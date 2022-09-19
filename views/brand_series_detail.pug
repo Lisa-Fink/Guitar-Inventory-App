@@ -1,0 +1,48 @@
+extends layout 
+
+block content
+  div
+    a(href='/brands') #{'Brands'}
+    span= ' > '
+    a(href=brand.url) #{brand.name}
+    span= ' > '
+    a(href=modelInfo.url) #{model}
+    span= ' > ' + seriesInfo.series
+
+  h1= title
+
+  if (seriesInfo.description)
+    div 
+        h3= 'Description:'
+        p= seriesInfo.description
+  
+  if (seriesInfo.features)
+    div 
+        h3= 'Features:'
+        ul 
+        each feature in seriesInfo.features 
+            li= feature
+
+  if (seriesInfo.colors)
+    div
+        h3= 'Colors:'
+        ul
+        each color in seriesInfo.colors 
+            li= color
+  if (lowPrice)
+    div 
+      h3= 'Price: '
+      p= 'From $' + lowPrice
+
+        
+        
+  
+
+  h2= 'All ' + title
+  ul
+    each guitar in guitarList
+      li 
+        a(href=guitar.url) #{guitar.series}
+        span= ` - Color: ${guitar.color}, Price:  $${guitar.price}`
+    else 
+      li The are no guitars

@@ -21,7 +21,6 @@ const SeriesSchema = new Schema({
       ],
     },
   ],
-  descriptiveColors: { type: Map, of: String },
   strings: { type: Number },
   stock: Number,
   type: {
@@ -31,7 +30,7 @@ const SeriesSchema = new Schema({
   },
   fingerboard: { type: String },
   description: { type: String },
-  features: { type: String },
+  features: { type: Array },
   series: { type: String, required: true },
 });
 

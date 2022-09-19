@@ -27,7 +27,10 @@ router.get('/', brandController.brand_list);
 // Get request for one brand
 router.get('/:name', brandController.brand_detail);
 
-// Get request for one model
+// Get request for one brand->model
 router.get('/:brand/:model', brandController.brand_model_detail);
+
+// Get request for one brand->model->series
+router.get('/:brand/:model/:series', brandController.brand_model_series_detail);
 
 module.exports = router;

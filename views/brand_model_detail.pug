@@ -1,10 +1,17 @@
 extends layout 
 
 block content
+  div
+    a(href='../') #{'Brands'}
+    span= ' > '
+    a(href=brand.url) #{brand.name}
+    span= ' > ' + model
+
+
   h1= title
 
   h2= model + ' Series'
-    ul
+  ul
     each guitar in seriesList
       li 
         a(href= guitar.url) #{guitar.series}
@@ -16,5 +23,6 @@ block content
     each guitar in guitarList
       li 
         a(href=guitar.url) #{guitar.series}
+        span= ` - Color: ${guitar.color}, Price:  $${guitar.price}`
     else 
       li The are no guitars

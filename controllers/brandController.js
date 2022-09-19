@@ -47,7 +47,7 @@ exports.brand_detail = async function (req, res, next) {
 exports.brand_model_detail = function (req, res, next) {
   const getInfo = async () => {
     try {
-      const brand = await Brand.find({ name: req.params.brand }).count();
+      const brand = await Brand.findOne({ name: req.params.brand });
       const guitarModel = await Guitar.find({
         model: req.params.model,
       }).count();
@@ -64,6 +64,51 @@ exports.brand_model_detail = function (req, res, next) {
         model: req.params.model,
         guitarList: guitars,
         seriesList: guitarSeries,
+        brand: brand,
+      });
+    } catch (err) {
+      console.log('error');
+      return next(err);
+    }
+  };
+  getInfo();
+};
+
+// Page for the series
+exports.brand_model_series_detail = function (req, res, next) {
+  const getInfo = async () => {
+    try {
+      const brand = await Brand.findOne({ name: req.params.brand });
+      const guitarModel = await Guitar.findOne({
+        model: req.params.model,
+      });
+      const guitarSeries = await Series.find({ series: req.params.series });
+      const guitars = await Guitarinstance.find({ series: req.params.series });
+
+      if (!brand | !guitarModel | !guitarSeries) {
+        const err = new Error('Not found');
+        err.status = 404;
+        return next(err);
+      }
+
+      let lowestPrice = null;
+
+      guitars.forEach((guitar) => {
+        if (!lowestPrice) {
+          lowestPrice = guitar.price;
+        } else if (guitar.price < lowestPrice) {
+          lowestPrice = guitar.price;
+        }
+      });
+
+      res.render('brand_series_detail', {
+        title: req.params.brand + ' ' + req.params.series,
+        model: req.params.model,
+        guitarList: guitars,
+        seriesInfo: guitarSeries[0],
+        lowPrice: lowestPrice,
+        brand: brand,
+        modelInfo: guitarModel,
       });
     } catch (err) {
       console.log('error');

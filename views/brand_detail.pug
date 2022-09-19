@@ -1,6 +1,10 @@
 extends layout 
 
 block content
+  div
+    a(href='/brands') #{'Brands'}
+    span= ' > ' + guitarModels[0].brand
+
   h1= title
   h2= 'Models'
   ul
@@ -15,3 +19,4 @@ block content
     each instance in guitarInstance
       li 
         a(href=instance.url) #{instance.series}
+        span= ` - Color: ${instance.color}, Price:  $${instance.price}`
