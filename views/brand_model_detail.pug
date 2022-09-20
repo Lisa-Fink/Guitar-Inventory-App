@@ -14,7 +14,7 @@ block content
   ul
     each guitar in seriesList
       li 
-        a(href= guitar.url) #{guitar.series}
+        a(href= model + '/' + guitar.series) #{guitar.series}
     else 
       li The are no guitars
 
@@ -22,7 +22,7 @@ block content
   ul
     each guitar in guitarList
       li 
-        a(href=guitar.url) #{guitar.series}
+        a(href= model + '/' + guitar.series + '/' + guitar.serialNum) #{guitar.series}
         span= ` - Color: ${guitar.color}, Price:  $${guitar.price}`
     else 
       li The are no guitars

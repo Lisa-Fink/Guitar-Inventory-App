@@ -1,0 +1,34 @@
+extends layout 
+
+block content 
+
+  h1= `Delete ${brand} Brand`
+
+
+  if (del == true)
+    h3= 'Are you sure you want to delete ' + brand + ' brand?'
+    button #{'confirm'}
+  else 
+    h3= 'Unable to delete. You must delete the following:'
+
+  if instances
+    h4= 'Guitars: '
+    ul
+      each guitar in instances
+        li
+          a(href=`/brands/${brand}/${guitar.model}/${guitar.series}/${guitar.serialNum}`) #{`${guitar.series} - ${guitar.color}`}
+
+  if series
+    h4= 'Series: '
+    ul
+      each ser in series
+        li
+          a(href=`/brands/${brand}/${ser.model}/${ser.series}`) #{ser.series}
+
+  if guitarModels
+    h4= 'Models: '
+    ul
+      each mod in guitarModels
+        li
+          a(href=`/brands/${brand}/${mod.model}`) #{mod.model}
+

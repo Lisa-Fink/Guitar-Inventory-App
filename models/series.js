@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const SeriesSchema = new Schema({
-  brand: { type: String, required: true },
+  brand: { type: Schema.Types.ObjectId, ref: 'Brand', required: true },
   model: { type: String, required: true },
   colors: [
     {
@@ -32,11 +32,6 @@ const SeriesSchema = new Schema({
   description: { type: String },
   features: { type: Array },
   series: { type: String, required: true },
-});
-
-SeriesSchema.virtual('url').get(function () {
-  // We don't use an arrow function as we'll need the this object
-  return `/brands/${this.brand}/${this.model}/${this.series}`;
 });
 
 module.exports = mongoose.model('Series', SeriesSchema);

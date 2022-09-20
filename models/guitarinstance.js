@@ -18,14 +18,9 @@ const GuitarinstanceSchema = new Schema({
     ],
   },
   price: { type: Number, required: true },
-  brand: { type: String, required: true },
+  brand: { type: Schema.Types.ObjectId, ref: 'Brand', required: true },
   serialNum: { type: String, required: true },
   model: { type: String, required: true },
-});
-
-GuitarinstanceSchema.virtual('url').get(function () {
-  // We don't use an arrow function as we'll need the this object
-  return `/brands/${this.brand}/${this.model}/${this.series}/${this.serialNum}`;
 });
 
 module.exports = mongoose.model('Guitarinstance', GuitarinstanceSchema);

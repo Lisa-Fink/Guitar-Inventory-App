@@ -6,6 +6,7 @@ const Series = require('../models/series');
 const async = require('async');
 
 const { body, validationResult } = require('express-validator');
+const { Model } = require('mongoose');
 
 // Display list of all Brands
 exports.brand_list = function (req, res, next) {
@@ -24,17 +25,18 @@ exports.brand_list = function (req, res, next) {
 
 // Display list of all guitars/models of the brand
 exports.brand_detail = async function (req, res, next) {
-  const brandInfo = await Brand.find({ name: req.params.name });
-  const guitarInfo = await Guitar.find({ brand: req.params.name });
-
-  const allGuitars = await Guitarinstance.find({ brand: req.params.name });
-
+  const brandInfo = await Brand.findOne({ name: req.params.name });
   if (brandInfo == null) {
     // No results.
     const err = new Error('Brand not found');
     err.status = 404;
     return next(err);
   }
+
+  const guitarInfo = await Guitar.find({ brand: brandInfo._id });
+
+  const allGuitars = await Guitarinstance.find({ brand: brandInfo._id });
+  console.log(allGuitars);
   // Successful
   res.render('brand_detail', {
     title: req.params.name + ' Guitars',
@@ -76,95 +78,79 @@ exports.brand_model_detail = function (req, res, next) {
 };
 
 // Page for the series
-exports.brand_model_series_detail = function (req, res, next) {
-  const getInfo = async () => {
-    try {
-      const brand = await Brand.findOne({ name: req.params.brand });
-      const guitarModel = await Guitar.findOne({
-        model: req.params.model,
-      });
-      const guitarSeries = await Series.find({ series: req.params.series });
-      const guitars = await Guitarinstance.find({ series: req.params.series });
+exports.brand_model_series_detail = async function (req, res, next) {
+  const brand = await Brand.findOne({ name: req.params.brand });
+  const guitarModel = await Guitar.findOne({
+    model: req.params.model,
+  });
+  const guitarSeries = await Series.findOne({ series: req.params.series });
+  const guitars = await Guitarinstance.find({ series: req.params.series });
 
-      if (!brand | !guitarModel | !guitarSeries) {
-        const err = new Error('Not found');
-        err.status = 404;
-        return next(err);
-      }
+  if (!brand | !guitarModel | !guitarSeries) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
 
-      let lowestPrice = null;
+  let lowestPrice = null;
 
-      guitars.forEach((guitar) => {
-        if (!lowestPrice) {
-          lowestPrice = guitar.price;
-        } else if (guitar.price < lowestPrice) {
-          lowestPrice = guitar.price;
-        }
-      });
-
-      res.render('brand_series_detail', {
-        title: req.params.brand + ' ' + req.params.series,
-        model: req.params.model,
-        guitarList: guitars,
-        seriesInfo: guitarSeries[0],
-        lowPrice: lowestPrice,
-        brand: brand,
-        modelInfo: guitarModel,
-      });
-    } catch (err) {
-      console.log('error');
-      return next(err);
+  guitars.forEach((guitar) => {
+    if (!lowestPrice) {
+      lowestPrice = guitar.price;
+    } else if (guitar.price < lowestPrice) {
+      lowestPrice = guitar.price;
     }
-  };
-  getInfo();
+  });
+
+  res.render('brand_series_detail', {
+    title: req.params.brand + ' ' + req.params.series,
+    model: req.params.model,
+    guitarList: guitars,
+    seriesInfo: guitarSeries,
+    lowPrice: lowestPrice,
+    brand: brand,
+    modelInfo: guitarModel,
+  });
 };
 
 // Page for the guitar instance
-exports.brand_model_series_instance_detail = function (req, res, next) {
-  const getInfo = async () => {
-    try {
-      const brand = await Brand.findOne({ name: req.params.brand });
-      const guitarModel = await Guitar.findOne({
-        model: req.params.model,
-      });
-      const guitarSeries = await Series.find({ series: req.params.series });
-      const guitar = await Guitarinstance.findOne({
-        serialNum: req.params.serial,
-      });
+exports.brand_model_series_instance_detail = async function (req, res, next) {
+  const brand = await Brand.findOne({ name: req.params.brand });
+  const guitarModel = await Guitar.findOne({
+    model: req.params.model,
+  });
+  const guitarSeries = await Series.findOne({ series: req.params.series });
+  const guitar = await Guitarinstance.findOne({
+    serialNum: req.params.serial,
+  });
 
-      const guitars = await Guitarinstance.find({ series: req.params.series });
+  const guitars = await Guitarinstance.find({ series: req.params.series });
 
-      if (!brand | !guitarModel | !guitarSeries | !guitar) {
-        const err = new Error('Not found');
-        err.status = 404;
-        return next(err);
-      }
+  if (!brand | !guitarModel | !guitarSeries | !guitar) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
 
-      let lowestPrice = null;
+  let lowestPrice = null;
 
-      guitars.forEach((guitar) => {
-        if (!lowestPrice) {
-          lowestPrice = guitar.price;
-        } else if (guitar.price < lowestPrice) {
-          lowestPrice = guitar.price;
-        }
-      });
-
-      res.render('brand_series_instance_detail', {
-        title: req.params.brand + ' ' + req.params.series,
-        model: req.params.model,
-        guitar: guitar,
-        seriesInfo: guitarSeries[0],
-        brand: brand,
-        modelInfo: guitarModel,
-        lowPrice: lowestPrice,
-      });
-    } catch (err) {
-      console.log('error');
-      return next(err);
+  guitars.forEach((guitar) => {
+    if (!lowestPrice) {
+      lowestPrice = guitar.price;
+    } else if (guitar.price < lowestPrice) {
+      lowestPrice = guitar.price;
     }
-  };
-  getInfo();
+  });
+
+  res.render('brand_series_instance_detail', {
+    title: req.params.brand + ' ' + req.params.series,
+    model: req.params.model,
+    guitar: guitar,
+    seriesInfo: guitarSeries,
+    brand: brand,
+    modelInfo: guitarModel,
+    lowPrice: lowestPrice,
+  });
 };
 
 // Page for creating a new brand
@@ -179,16 +165,13 @@ exports.brand_create_post = [
   body('about').escape(),
   (req, res, next) => {
     const errors = validationResult(req);
-    console.log('inside');
     const brand = new Brand({
-      _id: req.body.name,
       name: req.body.name,
       about: req.body.about,
     });
 
     if (!errors.isEmpty()) {
       // Handle Errors
-      console.log('error');
       res.render('brand_form', {
         title: 'Add a Brand',
         errors: errors.array(),
@@ -196,7 +179,7 @@ exports.brand_create_post = [
       return;
     } else {
       // Check if the brand already exists
-      Brand.findOne({ _id: req.body.name }).exec((err, found_brand) => {
+      Brand.findOne({ name: req.body.name }).exec((err, found_brand) => {
         if (err) {
           return next(err);
         }
@@ -218,3 +201,99 @@ exports.brand_create_post = [
     }
   },
 ];
+
+// Display Brand update form on GET
+exports.brand_update_get = (req, res, next) => {
+  // get brand
+  Brand.findOne({ name: req.params.name }).exec((err, found_brand) => {
+    if (err) {
+      return next(err);
+    }
+    if (found_brand == null) {
+      const err = new Error('Brand not found');
+      err.status = 404;
+      return next(err);
+    }
+    res.render('brand_form', {
+      title: 'Brand Form',
+      brand: found_brand.name,
+      about: found_brand.about,
+      status: 'update',
+    });
+  });
+};
+
+// Handle update brand POST
+exports.brand_update_post = [
+  body('name', 'Brand name required').trim().isLength({ min: 1 }).escape(),
+  body('about').escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      // Handle Errors
+      return next(err);
+    } else {
+      // Check if the about has changed
+      Brand.findOne({ name: req.params.name }).exec((err, found_brand) => {
+        if (err) {
+          return next(err);
+        }
+        if (
+          req.body.about == found_brand.about &&
+          req.body.name == found_brand.name
+        ) {
+          // Redirect to the brand page
+          res.redirect(found_brand.url);
+        } else {
+          const filter = { name: found_brand.name };
+          let updateDocument = {
+            $set: { name: req.body.name, about: req.body.about },
+          };
+          if (req.body.name == found_brand.name) {
+            updateDocument = { $set: { about: req.body.about } };
+          } else if (req.body.about == found_brand.about) {
+            updateDocument = { $set: { name: req.body.name } };
+          }
+          Brand.updateOne(filter, updateDocument).exec((err) => {
+            if (err) {
+              return next(err);
+            }
+            console.log('updated');
+            res.redirect('/brands/' + req.body.name);
+          });
+        }
+      });
+    }
+  },
+];
+
+exports.brand_delete_get = async (req, res, next) => {
+  const brand = await Brand.findOne({ name: req.params.name });
+  if (brand == null) {
+    const err = new Error('Brand not found');
+    err.status = 404;
+    return next(err);
+  }
+  const guitarInstance = await Guitarinstance.find({ brand: brand._id });
+
+  if (!guitarInstance.length) {
+    // can delete: go to delete page with button are you sure?
+    res.render('brand_delete', {
+      del: true,
+      brand: req.params.name,
+    });
+  } else {
+    const guitarModels = await Guitar.find({ brand: brand._id });
+    const series = await Series.find({ brand: brand._id });
+    // go to delete page with message unable to delete
+    // must delete all guitar instances, models, and series before deleting brand
+    res.render('brand_delete', {
+      del: false,
+      brand: req.params.name,
+      instances: guitarInstance,
+      guitarModels: guitarModels,
+      series: series,
+    });
+  }
+};

@@ -6,9 +6,9 @@ block content
     span= ' > '
     a(href=brand.url) #{brand.name}
     span= ' > '
-    a(href=modelInfo.url) #{model}
+    a(href=`/brands/${brand.name}/${model}`) #{model}
     span= ' > '
-    a(href=seriesInfo.url) #{seriesInfo.series}
+    a(href=`/brands/${brand.name}/${model}/${seriesInfo.series}`) #{seriesInfo.series}
     span= ' >  Serial: ' + guitar.serialNum
 
   h1= title

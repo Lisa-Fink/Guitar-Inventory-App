@@ -6,11 +6,16 @@ block content
     span= ' > ' + brand
 
   h1= title
+  span
+    a(href='/brands/' + brand + '/update') Edit #{brand} Brand #{' '}
+    a(href='/brands/' + brand + '/delete') Delete #{brand} Brand 
+
   h2= 'Models'
+  a(href='/models/create/' + brand) Add a new Model
   ul
     each guitar in guitarModels
         li 
-            a(href=guitar.url) #{guitar.model}
+            a(href='/brands/' + brand + '/' + guitar.model) #{guitar.model}
     else 
         li= 'No Models'
 
@@ -18,7 +23,7 @@ block content
   ul
     each instance in guitarInstance
         li 
-            a(href=instance.url) #{instance.series}
+            a(href= `${brand}/${instance.model}/${instance.series}/${instance.serialNum}`) #{instance.series}
             span= ` - Color: ${instance.color}, Price:  $${instance.price}`
     else 
       li= 'None in Stock'

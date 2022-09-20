@@ -6,7 +6,7 @@ block content
     span= ' > '
     a(href=brand.url) #{brand.name}
     span= ' > '
-    a(href=modelInfo.url) #{model}
+    a(href=`/brands/${brand.name}/${model}`) #{model}
     span= ' > ' + seriesInfo.series
 
   h1= title
@@ -42,7 +42,7 @@ block content
   ul
     each guitar in guitarList
       li 
-        a(href=guitar.url) #{guitar.series}
+        a(href=`/brands/${brand.name}/${model}/${seriesInfo.series}/${guitar.serialNum}`) #{guitar.series}
         span= ` - Color: ${guitar.color}, Price:  $${guitar.price}`
     else 
       li The are no guitars
