@@ -1,0 +1,27 @@
+extends layout 
+block content 
+
+  h1= title 
+  form(method='POST' action='')
+    //- each brand in brands
+    //-       p= brand._id
+    div 
+      label(for='brand') Brand*:
+      select#brand(type='select' name="brand" required='true') 
+        option(value='' disabled selected) Select the brand
+        for b in brands
+          option(value=b selected=((defaultBrand == b.name) ? 'selected' : false)) #{b.name}
+
+      label(for='model') Model*: 
+      input#model(type='text', placeholder='Name of model' name='model' required='true' value=(undefined===editModel? '' : editModel))
+    if status 
+      button(type='submit') Update 
+    else 
+      button(type='submit') Add Model
+    button 
+      a(href='../') Cancel
+
+  if errors
+    ul 
+      for error in errors 
+        li!= error.msg

@@ -23,11 +23,6 @@ const SeriesSchema = new Schema({
   ],
   strings: { type: Number },
   stock: Number,
-  type: {
-    type: String,
-    required: true,
-    enum: ['Electric Guitar', 'Electric Bass'],
-  },
   fingerboard: { type: String },
   description: { type: String },
   features: { type: Array },

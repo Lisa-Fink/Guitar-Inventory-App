@@ -4,10 +4,11 @@ block content
 
   h1= `Delete ${brand} Brand`
 
-
   if (del == true)
     h3= 'Are you sure you want to delete ' + brand + ' brand?'
-    button #{'confirm'}
+    form(method='POST' action='')
+      input(type='hidden', name='brandid', required='true', value=id)
+      button(type='submit') confirm
   else 
     h3= 'Unable to delete. You must delete the following:'
 

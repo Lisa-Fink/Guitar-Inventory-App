@@ -3,10 +3,7 @@ const Guitar = require('../models/guitar');
 const Guitarinstance = require('../models/guitarinstance');
 const Series = require('../models/series');
 
-const async = require('async');
-
 const { body, validationResult } = require('express-validator');
-const { Model } = require('mongoose');
 
 // Display list of all Brands
 exports.brand_list = function (req, res, next) {
@@ -36,7 +33,7 @@ exports.brand_detail = async function (req, res, next) {
   const guitarInfo = await Guitar.find({ brand: brandInfo._id });
 
   const allGuitars = await Guitarinstance.find({ brand: brandInfo._id });
-  console.log(allGuitars);
+
   // Successful
   res.render('brand_detail', {
     title: req.params.name + ' Guitars',
@@ -57,7 +54,7 @@ exports.brand_model_detail = function (req, res, next) {
       const guitarSeries = await Series.find({ model: req.params.model });
       const guitars = await Guitarinstance.find({ model: req.params.model });
 
-      if (!brand | !guitarModel | !guitarSeries.length) {
+      if (!brand | !guitarModel) {
         const err = new Error('Not found');
         err.status = 404;
         return next(err);
@@ -276,16 +273,17 @@ exports.brand_delete_get = async (req, res, next) => {
     return next(err);
   }
   const guitarInstance = await Guitarinstance.find({ brand: brand._id });
+  const guitarModels = await Guitar.find({ brand: brand._id });
+  const series = await Series.find({ brand: brand._id });
 
-  if (!guitarInstance.length) {
+  if (!guitarInstance.length && !guitarModels.length && !series.length) {
     // can delete: go to delete page with button are you sure?
     res.render('brand_delete', {
       del: true,
       brand: req.params.name,
+      id: brand._id,
     });
   } else {
-    const guitarModels = await Guitar.find({ brand: brand._id });
-    const series = await Series.find({ brand: brand._id });
     // go to delete page with message unable to delete
     // must delete all guitar instances, models, and series before deleting brand
     res.render('brand_delete', {
@@ -296,4 +294,37 @@ exports.brand_delete_get = async (req, res, next) => {
       series: series,
     });
   }
+};
+
+exports.brand_delete_post = async (req, res, next) => {
+  const id = req.body.brandid;
+  const brand = await Brand.findById(id);
+  if (brand == null) {
+    const err = new Error('Brand not found');
+    err.status = 404;
+    return next(err);
+  }
+  const guitarInstance = await Guitarinstance.find({ brand: id });
+  const guitarModels = await Guitar.find({ brand: id });
+  const series = await Series.find({ brand: id });
+
+  if (guitarInstance.length && guitarModels.length && !series.length) {
+    // can't delete render the same form as get
+    res.render('brand_delete', {
+      del: false,
+      brand: brand.name,
+      id: id,
+      instances: guitarInstance,
+      guitarModels: guitarModels,
+      series: series,
+    });
+    return;
+  }
+  Brand.findByIdAndRemove(id, (err) => {
+    if (err) {
+      return next(err);
+    }
+    // success - go to brand list
+    res.redirect('../');
+  });
 };

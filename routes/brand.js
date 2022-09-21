@@ -9,14 +9,14 @@ router.get('/', brandController.brand_list);
 // Get request to delete brand
 router.get('/:name/delete', brandController.brand_delete_get);
 
+// POST request to delete a brand
+router.post('/:name/delete', brandController.brand_delete_post);
+
 // Get request for creating a brand
 router.get('/create', brandController.brand_create_get);
 
 // POST request for creating a brand
 router.post('/create', brandController.brand_create_post);
-
-// // POST request to delete a brand
-// router.get('/:name/delete', brandController.brand_delete_post);
 
 // Get request to update a brand
 router.get('/:name/update', brandController.brand_update_get);
