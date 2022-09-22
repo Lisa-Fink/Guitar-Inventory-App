@@ -59,8 +59,6 @@ exports.model_create_post = [
       type: 'Electric Guitar',
     });
 
-    console.log(gModel);
-
     gModel.save((err) => {
       if (err) {
         return next(err);
