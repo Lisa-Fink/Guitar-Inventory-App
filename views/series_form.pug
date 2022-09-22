@@ -1,0 +1,64 @@
+extends layout
+
+block content 
+
+    h1= title
+
+
+    form(method='POST' action='')
+        div 
+            label(for='model') Brand and Model*:
+            select#model(type='select' name="model" required='true') 
+                option(value='' disabled selected) Select the brand and model
+                each b in brands
+                    -const id = b._id.toString()
+                    optgroup(label=b.name)
+                        each m in models
+                            -const mod_brand = m.brand.toString()
+                            if mod_brand === id
+                                -const mInfo = {bName: b.name, brand: m.brand, model: m.model}
+                                option(value=mInfo selected=((defaultModel == m.model) ? 'selected' : false)) #{m.model}
+        div
+            label(for='names') Series Name*:
+            input#name(type='text', placeholder='Name of Series' name='name' maxlength='100' required='true' value=(undefined===seriesName ? '' : seriesName))
+
+        div 
+            label Color Options: 
+            div 
+                for color in colors
+                    input(type='checkbox', name='colors[]', id=color.name, value=color.name checked=color.checked)
+                    label(for=color.name) #{color.name}
+
+        div  
+            label(for='about') About: 
+            textarea#name(type='text', placeholder='About the series' name='about') #{undefined===about ? '' : about}
+
+        div 
+            caption Features:
+            div
+                label(for='features0') Feature 1:
+                input#features0(type='text', placeholder='features' name='features0' maxlength='100' value=(undefined===features ? '' : features[0]))
+            div
+                label(for='features1') Feature 2:
+                input#features1(type='text', placeholder='features' name='features1' maxlength='100' value=(undefined===features ? '' : features[1]))
+            div
+                label(for='features2') Feature 3:
+                input#features2(type='text', placeholder='features' name='features2' maxlength='100' value=(undefined===features ? '' : features[2]))
+            div
+                label(for='features3') Feature 4:
+                input#features3(type='text', placeholder='features' name='features3' maxlength='100' value=(undefined===features ? '' : features[3]))
+            div
+                label(for='features4') Feature 5:
+                input#features4(type='text', placeholder='features' name='features4' maxlength='100' value=(undefined===features ? '' : features[4]))
+        if status 
+            button(type='submit') Update
+        else 
+            button(type='submit')  Add
+        button 
+            a(href='./') Cancel
+
+        if errors 
+            ul
+            for error in errors 
+                li= error.msg
+            
