@@ -22,7 +22,7 @@ const SeriesSchema = new Schema({
     },
   ],
   strings: { type: Number },
-  stock: Number,
+  stock: { type: Number },
   fingerboard: { type: String },
   description: { type: String },
   features: { type: Array },
