@@ -14,9 +14,9 @@ block content
     else 
         button(type='submit')  Add
     button 
-        a(href='../') Cancel
+        a(href='./') Cancel
 
   if errors 
     ul
       for error in errors 
-        li!= error.msg
+        li= error.msg
