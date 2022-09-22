@@ -282,6 +282,7 @@ exports.brand_delete_get = async (req, res, next) => {
       del: true,
       brand: req.params.name,
       id: brand._id,
+      title: `Delete ${req.params.name} Brand`,
     });
   } else {
     // go to delete page with message unable to delete
@@ -292,6 +293,7 @@ exports.brand_delete_get = async (req, res, next) => {
       instances: guitarInstance,
       guitarModels: guitarModels,
       series: series,
+      title: `Delete ${req.params.name} Brand`,
     });
   }
 };
