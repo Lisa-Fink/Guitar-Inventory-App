@@ -48,9 +48,9 @@ exports.brand_model_detail = function (req, res, next) {
   const getInfo = async () => {
     try {
       const brand = await Brand.findOne({ name: req.params.brand });
-      const guitarModel = await Guitar.find({
+      const guitarModel = await Guitar.findOne({
         model: req.params.model,
-      }).count();
+      });
       const guitarSeries = await Series.find({ model: req.params.model });
       const guitars = await Guitarinstance.find({ model: req.params.model });
 
@@ -61,7 +61,8 @@ exports.brand_model_detail = function (req, res, next) {
       }
       res.render('brand_model_detail', {
         title: req.params.brand + ' ' + req.params.model + 's',
-        model: req.params.model,
+        model: guitarModel.model,
+        modelID: guitarModel._id,
         guitarList: guitars,
         seriesList: guitarSeries,
         brand: brand,

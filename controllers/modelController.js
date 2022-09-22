@@ -71,7 +71,10 @@ exports.model_create_post = [
 ];
 
 exports.model_update_get = async (req, res, next) => {
-  const gModel = await Guitar.findOne({ model: req.params.model });
+  const gModel = await Guitar.findOne({
+    model: req.params.model,
+    _id: req.params.id,
+  });
   if (gModel == null) {
     const err = new Error('Not found');
     err.status = 404;
@@ -95,7 +98,10 @@ exports.model_update_get = async (req, res, next) => {
 exports.model_update_post = [
   body('model', 'Model name required').trim().escape(),
   async (req, res, next) => {
-    const originalModel = await Guitar.findOne({ model: req.params.model });
+    const originalModel = await Guitar.findOne({
+      model: req.params.model,
+      _id: req.params.id,
+    });
     // create a new model
     // default include type of 'Electric Guitar' (future update could include different types)
     // default stock of 0
@@ -116,7 +122,7 @@ exports.model_update_post = [
       originalModel.brand == brand._id
     ) {
       // nothing changed
-      res.redirect(`../brands/${brand.name}/${originalModel.model}`);
+      res.redirect(`../../../brands/${brand.name}/${originalModel.model}`);
       return;
     }
 
@@ -166,7 +172,7 @@ exports.model_update_post = [
         }
         // redirect to the new page
         console.log('model updated');
-        res.redirect(`../../brands/${brand.name}/${req.body.model}`);
+        res.redirect(`../../../brands/${brand.name}/${req.body.model}`);
       }
     );
   },
