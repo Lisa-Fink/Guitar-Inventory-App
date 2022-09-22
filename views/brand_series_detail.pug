@@ -16,14 +16,14 @@ block content
         h3= 'Description:'
         p= seriesInfo.description
   
-  if (seriesInfo.features)
+  if (seriesInfo.features.length)
     div 
         h3= 'Features:'
         ul 
         each feature in seriesInfo.features 
             li= feature
 
-  if (seriesInfo.colors)
+  if (seriesInfo.colors.length)
     div
         h3= 'Colors:'
         ul
