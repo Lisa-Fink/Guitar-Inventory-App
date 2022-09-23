@@ -10,6 +10,10 @@ block content
     span= ' > ' + seriesInfo.series
 
   h1= title
+  span
+    a(href='../../../series/' + seriesInfo.series + '/' + seriesInfo._id + '/update') Edit #{seriesInfo.series} Series #{' '}
+    a(href='../../../series/' + seriesInfo.series + '/' + seriesInfo._id + '/delete') Delete #{seriesInfo.series} Series
+
 
   if (seriesInfo.description)
     div 

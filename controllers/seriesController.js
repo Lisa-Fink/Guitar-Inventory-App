@@ -53,10 +53,20 @@ exports.series_create_post = [
     const errors = validationResult(req);
     const features = [];
 
-    for (let feature in req.body.features) {
-      if (feature) {
-        feature.push(feature);
-      }
+    if (req.body.features0) {
+      features.push(req.body.features0);
+    }
+    if (req.body.features1) {
+      features.push(req.body.features1);
+    }
+    if (req.body.features2) {
+      features.push(req.body.features2);
+    }
+    if (req.body.features3) {
+      features.push(req.body.features3);
+    }
+    if (req.body.features4) {
+      features.push(req.body.features4);
     }
 
     if (!errors.isEmpty()) {
@@ -78,9 +88,10 @@ exports.series_create_post = [
 
       for (let color of colorList) {
         if (
-          req.body['colors'] &&
-          req.body['colors'].filter((selectedColor) => selectedColor === color)
-            .length
+          req.body['colors[]'] &&
+          req.body['colors[]'].filter(
+            (selectedColor) => selectedColor === color
+          ).length
         ) {
           color.checked = true;
         }
@@ -142,112 +153,229 @@ exports.series_create_post = [
   },
 ];
 
-// exports.model_update_get = async (req, res, next) => {
-//   const gModel = await Guitar.findOne({ model: req.params.model });
-//   if (gModel == null) {
-//     const err = new Error('Not found');
-//     err.status = 404;
-//     return next(err);
-//   }
+exports.series_update_get = async (req, res, next) => {
+  const brandList = await Brand.find({}, { name: 1 });
+  const modelList = await Guitar.find({}, { _id: 0, model: 1, brand: 1 });
 
-//   // find the brand
-//   const brand = await Brand.findById(gModel.brand);
+  const series = await Series.findById(req.params.id);
 
-//   // find all brands for the select list
-//   const brandList = await Brand.find({}, { name: 1 });
+  if (series === null) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
 
-//   res.render('model_form', {
-//     status: true,
-//     brands: brandList,
-//     defaultBrand: brand.name,
-//     editModel: gModel.model,
-//   });
-// };
+  seriesBrandName = brandList.filter(
+    (brand) => brand._id.toString() == series.brand.toString()
+  )[0].name;
 
-// exports.model_update_post = [
-//   body('model', 'Model name required').trim().escape(),
-//   async (req, res, next) => {
-//     const originalModel = await Guitar.findOne({ model: req.params.model });
-//     // create a new model
-//     // default include type of 'Electric Guitar' (future update could include different types)
-//     // default stock of 0
-//     const errors = validationResult(req);
-//     const brand = JSON.parse(req.body.brand);
-//     // req.body.model = new model name
-//     if (!errors.isEmpty()) {
-//       // Handle Errors
-//       res.render('model_form'),
-//         {
-//           errors: errors.array(),
-//         };
-//     }
+  const colors = [
+    { name: 'red', checked: false },
+    { name: 'orange', checked: false },
+    { name: 'yellow', checked: false },
+    { name: 'green', checked: false },
+    { name: 'blue', checked: false },
+    { name: 'purple', checked: false },
+    { name: 'white', checked: false },
+    { name: 'black', checked: false },
+    { name: 'sunburst', checked: false },
+  ];
 
-//     // Check if original model or brand are the same
-//     if (
-//       originalModel.model == req.body.model &&
-//       originalModel.brand == brand._id
-//     ) {
-//       // nothing changed
-//       res.redirect(`../brands/${brand.name}/${originalModel.model}`);
-//       return;
-//     }
+  for (let seriesColor of series.colors) {
+    for (let color of colors) {
+      if (seriesColor == color.name) {
+        color.checked = true;
+      }
+    }
+  }
 
-//     // update both model name and brand
-//     let updateDocument = {
-//       $set: { model: req.body.model, brand: brand._id },
-//     };
+  res.render('series_form', {
+    title: `Edit ${series.series} Series`,
+    // status true is updating not creating
+    status: true,
+    defaultModel: series.model,
+    brands: brandList,
+    models: modelList,
+    colors: colors,
+    about: series.description,
+    features: series.features,
+    seriesName: series.series,
+    brandName: seriesBrandName,
+  });
+};
 
-//     // Check if model name is the same but brand changed
-//     if (originalModel.model == req.body.model) {
-//       // update brand
-//       updateDocument = {
-//         $set: { brand: brand._id },
-//       };
-//     }
+exports.series_update_post = [
+  body('name').trim().isLength({ min: 1 }).escape(),
+  body('about').trim().escape(),
+  body('features0').trim().escape(),
+  body('features1').trim().escape(),
+  body('features2').trim().escape(),
+  body('features3').trim().escape(),
+  body('features4').trim().escape(),
 
-//     // Check if brand is the same but model name changed
-//     if (originalModel.brand == brand._id) {
-//       // update model name
-//       updateDocument = {
-//         $set: { model: req.body.model },
-//       };
-//     }
+  // Process request after validation and sanitization.
+  async (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+    const features = [];
+    const model = JSON.parse(req.body.model);
 
-//     // find and update all series and guitar instances of the model
-//     Series.updateMany({ model: originalModel.model }, updateDocument).exec(
-//       (err) => {
-//         if (err) {
-//           return next(err);
-//         }
-//       }
-//     );
+    if (req.body.features0) {
+      features.push(req.body.features0);
+    }
+    if (req.body.features1) {
+      features.push(req.body.features1);
+    }
+    if (req.body.features2) {
+      features.push(req.body.features2);
+    }
+    if (req.body.features3) {
+      features.push(req.body.features3);
+    }
+    if (req.body.features4) {
+      features.push(req.body.features4);
+    }
 
-//     Guitarinstance.updateMany(
-//       { model: originalModel.model },
-//       updateDocument
-//     ).exec((err) => {
-//       if (err) {
-//         return next(err);
-//       }
-//     });
-//     // update the one model
-//     Guitar.updateOne({ model: originalModel.model }, updateDocument).exec(
-//       (err) => {
-//         if (err) {
-//           return next(err);
-//         }
-//         // redirect to the new page
-//         console.log('model updated');
-//         res.redirect(`../../brands/${brand.name}/${req.body.model}`);
-//       }
-//     );
-//   },
-// ];
+    if (!errors.isEmpty()) {
+      // there are errors get info needed to render form again and render
+      const brandList = await Brand.find({}, { name: 1 });
+      const modelList = await Guitar.find({}, { _id: 0, model: 1, brand: 1 });
 
-// exports.model_delete_get = (req, res, next) => {
+      const colorList = [
+        { name: 'red', checked: false },
+        { name: 'orange', checked: false },
+        { name: 'yellow', checked: false },
+        { name: 'green', checked: false },
+        { name: 'blue', checked: false },
+        { name: 'purple', checked: false },
+        { name: 'white', checked: false },
+        { name: 'black', checked: false },
+        { name: 'sunburst', checked: false },
+      ];
+
+      for (let color of colorList) {
+        if (
+          req.body['colors[]'] &&
+          req.body['colors[]'].filter(
+            (selectedColor) => selectedColor === color
+          ).length
+        ) {
+          color.checked = true;
+        }
+      }
+
+      res.render('series_form', {
+        title: `Edit ${req.body.name} Series`,
+        // status true is updating not creating
+        status: true,
+        defaultModel: req.body.model.model,
+        brands: brandList,
+        models: modelList,
+        colors: colors,
+        about: req.body.about,
+        features: req.body.features,
+        seriesName: req.body.name,
+        brandName: req.body.model.bName,
+      });
+      return;
+    }
+    // check if original series has any differences
+    const originalSeries = await Series.findById(req.params.id);
+
+    const checkSameArr = (arr1, arr2) => {
+      if (arr1 && arr2 && arr1.length === arr2.length) {
+        for (const item of arr1) {
+          if (arr2.includes(item) == false) {
+            return false;
+          }
+        }
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    for (const item in originalSeries) {
+      if (
+        originalSeries.model === model.model &&
+        originalSeries.brand.toString() === model.brand &&
+        originalSeries.series === req.body.name &&
+        originalSeries.description === req.body.about &&
+        checkSameArr(originalSeries.colors, req.body['colors[]']) &&
+        checkSameArr(originalSeries.features, features)
+      ) {
+        // no changes were made, redirect to the page
+        res.redirect(
+          `../../../brands/${model.bName}/${model.model}/${req.body.name}`
+        );
+        return;
+      }
+    }
+
+    let update = {};
+
+    // check which keys need to be updated and add to update
+    if (originalSeries.series != req.body.name) {
+      // if series name changed check if there's a model with the same brand and series name
+      checkSameNameModelBrand = await Series.findOne({
+        series: req.body.name,
+        model: model.model,
+        brand: model.brand,
+      });
+      if (checkSameNameModelBrand) {
+        // the series already exists so redirect to page
+        res.redirect(
+          `../../../brands/${model.bName}/${model.model}/${req.body.name}`
+        );
+        return;
+      }
+      update.series = req.body.name;
+    }
+
+    if (originalSeries.model !== model.model) {
+      update.model = model.model;
+    }
+
+    if (originalSeries.brand !== model.brand) {
+      update.brand = model.brand;
+    }
+
+    if (originalSeries.description !== req.body.about) {
+      update.description = req.body.about;
+    }
+
+    if (!checkSameArr(originalSeries.colors, req.body['colors[]'])) {
+      update.colors = req.body['colors[]'];
+    }
+
+    if (!checkSameArr(originalSeries.features, features)) {
+      update.features = features;
+    }
+
+    let updateDocument = {
+      $set: update,
+    };
+
+    // save the updated series
+    Series.updateOne({ _id: originalSeries._id }, updateDocument).exec(
+      (err) => {
+        if (err) {
+          return next(err);
+        }
+        // redirect to the updated page
+        console.log('series updated');
+        res.redirect(
+          `../../../brands/${model.bName}/${model.model}/${req.body.name}`
+        );
+      }
+    );
+  },
+];
+
+// exports.series_delete_get = (req, res, next) => {
 //   res.send('incomplete');
 // };
 
-// exports.model_delete_post = (req, res, next) => {
+// exports.series_delete_post = (req, res, next) => {
 //   res.send('incomplete');
 // };

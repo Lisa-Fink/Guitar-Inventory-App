@@ -54,8 +54,11 @@ block content
             button(type='submit') Update
         else 
             button(type='submit')  Add
-        button 
-            a(href='./') Cancel
+        button
+            if status 
+                a(href=`../../../brands/${brandName}/${defaultModel}/${seriesName}`) Cancel
+            else
+                a(href='./') Cancel
 
         if errors 
             ul
