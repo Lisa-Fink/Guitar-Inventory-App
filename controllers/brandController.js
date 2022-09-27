@@ -1,6 +1,6 @@
 const Brand = require('../models/brand');
 const Guitar = require('../models/guitar');
-const Guitarinstance = require('../models/guitarinstance');
+const GuitarInstance = require('../models/guitarInstance');
 const Series = require('../models/series');
 
 const { body, validationResult } = require('express-validator');
@@ -32,14 +32,14 @@ exports.brand_detail = async function (req, res, next) {
 
   const guitarInfo = await Guitar.find({ brand: brandInfo._id });
 
-  const allGuitars = await Guitarinstance.find({ brand: brandInfo._id });
+  const allGuitars = await GuitarInstance.find({ brand: brandInfo._id });
 
   // Successful
   res.render('brand_detail', {
     title: req.params.name + ' Guitars',
     brand: req.params.name,
     guitarModels: guitarInfo,
-    guitarInstance: allGuitars,
+    GuitarInstance: allGuitars,
   });
 };
 
@@ -52,7 +52,7 @@ exports.brand_model_detail = function (req, res, next) {
         model: req.params.model,
       });
       const guitarSeries = await Series.find({ model: req.params.model });
-      const guitars = await Guitarinstance.find({ model: req.params.model });
+      const guitars = await GuitarInstance.find({ model: req.params.model });
 
       if (!brand | !guitarModel) {
         const err = new Error('Not found');
@@ -82,7 +82,7 @@ exports.brand_model_series_detail = async function (req, res, next) {
     model: req.params.model,
   });
   const guitarSeries = await Series.findOne({ series: req.params.series });
-  const guitars = await Guitarinstance.find({ series: req.params.series });
+  const guitars = await GuitarInstance.find({ series: req.params.series });
 
   if (!brand | !guitarModel | !guitarSeries) {
     const err = new Error('Not found');
@@ -118,11 +118,11 @@ exports.brand_model_series_instance_detail = async function (req, res, next) {
     model: req.params.model,
   });
   const guitarSeries = await Series.findOne({ series: req.params.series });
-  const guitar = await Guitarinstance.findOne({
+  const guitar = await GuitarInstance.findOne({
     serialNum: req.params.serial,
   });
 
-  const guitars = await Guitarinstance.find({ series: req.params.series });
+  const guitars = await GuitarInstance.find({ series: req.params.series });
 
   if (!brand | !guitarModel | !guitarSeries | !guitar) {
     const err = new Error('Not found');
@@ -273,7 +273,7 @@ exports.brand_delete_get = async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-  const guitarInstance = await Guitarinstance.find({ brand: brand._id });
+  const guitarInstance = await GuitarInstance.find({ brand: brand._id });
   const guitarModels = await Guitar.find({ brand: brand._id });
   const series = await Series.find({ brand: brand._id });
 
@@ -307,7 +307,7 @@ exports.brand_delete_post = async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-  const guitarInstance = await Guitarinstance.find({ brand: id });
+  const guitarInstance = await GuitarInstance.find({ brand: id });
   const guitarModels = await Guitar.find({ brand: id });
   const series = await Series.find({ brand: id });
 

@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 const brandRouter = require('./routes/brand');
 const modelRouter = require('./routes/g_model');
 const seriesRouter = require('./routes/series');
+const guitarInstanceRouter = require('./routes/guitarInstance');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/', indexRouter);
 app.use('/brands', brandRouter);
 app.use('/models', modelRouter);
 app.use('/series', seriesRouter);
+app.use('/guitars', guitarInstanceRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

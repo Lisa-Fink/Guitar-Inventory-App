@@ -1,6 +1,6 @@
 const Brand = require('../models/brand');
 const Guitar = require('../models/guitar');
-const Guitarinstance = require('../models/guitarinstance');
+const Guitarinstance = require('../models/guitarInstance');
 const Series = require('../models/series');
 
 const { body, validationResult } = require('express-validator');

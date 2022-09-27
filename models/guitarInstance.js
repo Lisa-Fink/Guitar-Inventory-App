@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const GuitarinstanceSchema = new Schema({
+const GuitarInstanceSchema = new Schema({
   series: { type: String, required: true },
   color: {
     type: String,
@@ -23,4 +23,4 @@ const GuitarinstanceSchema = new Schema({
   model: { type: String, required: true },
 });
 
-module.exports = mongoose.model('Guitarinstance', GuitarinstanceSchema);
+module.exports = mongoose.model('GuitarInstance', GuitarInstanceSchema);
