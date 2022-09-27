@@ -17,6 +17,7 @@ exports.model_create_get = async (req, res, next) => {
     status: false,
     defaultBrand: req.query.brand,
     brands: brandList,
+    title: 'Add a Model',
   });
 };
 
