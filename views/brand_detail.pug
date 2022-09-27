@@ -11,7 +11,7 @@ block content
     a(href='/brands/' + brand + '/delete') Delete #{brand} Brand 
 
   h2= 'Models'
-  a(href='/models/create?brand=' + brand) Add a new Model
+  a(href='/models/create?brand=' + brand) Add a new #{brand} Model
   ul
     each guitar in guitarModels
         li 
