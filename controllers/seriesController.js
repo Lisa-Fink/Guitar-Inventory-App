@@ -31,6 +31,7 @@ exports.series_create_get = async (req, res, next) => {
     // status true is updating not creating
     status: false,
     defaultModel: req.query.model,
+    defaultBrand: req.query.brand,
     brands: brandList,
     models: modelList,
     colors: colors,

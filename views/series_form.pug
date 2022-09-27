@@ -17,7 +17,7 @@ block content
                             -const mod_brand = m.brand.toString()
                             if mod_brand === id
                                 -const mInfo = {bName: b.name, brand: m.brand, model: m.model}
-                                option(value=mInfo selected=((defaultModel == m.model) ? 'selected' : false)) #{m.model}
+                                option(value=mInfo selected=((defaultModel == m.model && defaultBrand == id) ? 'selected' : false)) #{m.model}
         div
             label(for='names') Series Name*:
             input#name(type='text', placeholder='Name of Series' name='name' maxlength='100' required='true' value=(undefined===seriesName ? '' : seriesName))
