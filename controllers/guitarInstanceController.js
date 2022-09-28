@@ -98,8 +98,82 @@ exports.guitar_create_post = [
   },
 ];
 
-exports.guitar_update_get = (req, res, next) => {
-  res.send('incomplete');
+exports.guitar_update_get = async (req, res, next) => {
+  // validate the id from the url
+  const ObjectId = require('mongoose').Types.ObjectId;
+  function isValidObjectId(id) {
+    if (ObjectId.isValid(id)) {
+      if (String(new ObjectId(id)) === id) return true;
+      return false;
+    }
+    return false;
+  }
+  if (!isValidObjectId(req.params.id)) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const guitar = await GuitarInstance.findById(req.params.id);
+  console.log(guitar);
+
+  if (!guitar) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const brandList = await Brand.find({}, { name: 1 });
+  const modelList = await Guitar.find({}, { _id: 0, model: 1, brand: 1 });
+  const seriesList = await Series.find(
+    {},
+    { _id: 0, model: 1, brand: 1, series: 1, colors: 1 }
+  );
+
+  const brandName = await Brand.findById(guitar.brand);
+
+  // lookup the colors in the series
+  const colors = [
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'blue',
+    'purple',
+    'white',
+    'black',
+    'sunburst',
+  ];
+
+  // created copy because the original isn't passing in colors
+  copiedSeries = [];
+
+  seriesList.forEach((series) => {
+    copy = {
+      brand: series.brand,
+      series: series.series,
+      model: series.model,
+      colors: series.colors,
+    };
+    copiedSeries.push(copy);
+  });
+
+  res.render('guitar_instance_form', {
+    title: 'Edit Guitar',
+    // status true is updating not creating
+    status: true,
+    defaultModel: guitar.model,
+    defaultBrand: guitar.brand,
+    defaultSeries: guitar.series,
+    brands: brandList,
+    models: modelList,
+    series: copiedSeries,
+    colors: colors,
+    price: guitar.price,
+    serialNum: guitar.serialNum,
+    defaultColor: guitar.color,
+    brandName: brandName.name,
+  });
 };
 
 exports.guitar_update_post = (req, res, next) => {
