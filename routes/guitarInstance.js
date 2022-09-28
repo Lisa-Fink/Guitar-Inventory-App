@@ -13,10 +13,10 @@ router.get('/create', guitarInstanceController.guitar_create_get);
 router.post('/create', guitarInstanceController.guitar_create_post);
 
 // Get request to update a guitar
-router.get('/:guitar/:id/update', guitarInstanceController.guitar_update_get);
+router.get('/:id/update', guitarInstanceController.guitar_update_get);
 
 // POST request to update a guitar
-router.post('/:guitar/:id/update', guitarInstanceController.guitar_update_post);
+router.post('/:id/update', guitarInstanceController.guitar_update_post);
 
 // // Get request to delete a guitar
 // router.get('/:guitar/delete', guitarInstanceController.guitar_delete_get);
