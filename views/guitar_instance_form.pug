@@ -1,0 +1,77 @@
+extends layout
+
+block content 
+
+    h1= title
+    
+
+    form(method='POST' action='')
+        div 
+            label(for='series') Brand/Model/Series*:
+            select#series(type='select' name="series" required='true') 
+                option(value={colors: []} disabled selected) Select the series
+                each b in brands
+                    -const id = b._id.toString()
+                    each m in models
+                        -const mod_brand = m.brand.toString()
+                        if mod_brand === id
+                            optgroup(label= b.name + '-' + m.model)
+                                each s in series
+                                    - const s_brand = s.brand.toString()
+                                    - const info = {bName: b.name, brand: m.brand, model: m.model, series: s.series, colors: s.colors}
+                                    if s_brand === id && s.model === m.model
+                                        option(value=info selected=((defaultModel == m.model && defaultBrand == id && defaultSeries == s.series) ? 'selected' : false)) #{s.series}
+        div 
+            label(for='color') Color* (select Brand/Model/Series to view available options):
+            select#color(tye='select' name='color')
+                option(value='' disabled selected) Select the Color
+                each c in colors
+                    option(value=c disabled selected=(c== defaultColor ? 'selected' : false)) #{c}
+
+        div  
+            label(for='price') Price*: 
+            input#name(type='number', step='0.01' placeholder='price' required name='price' value=(undefined===price ? '' : price))
+
+        div  
+            label(for='serialNum') Serial Number*: 
+            input#serialNum(type='text', placeholder='serial number' required name='serialNum' value=(undefined===serialNum ? '' : serialNum))
+
+        if status 
+            button(type='submit') Update
+        else 
+            button(type='submit')  Add
+        button
+            if status 
+                a(href=`../../../brands/${brandName}/${defaultModel}/${seriesName}/${serialNum}`) Cancel
+            else
+                a(href='./') Cancel
+
+        if errors 
+            ul
+            for error in errors 
+                li= error.msg
+            
+    script.
+        const selectedSeries = document.getElementById('series');
+        let selectedColors = JSON.parse(selectedSeries.value).colors
+
+        const enableColors = () => {
+            const selections = document.getElementById('color')
+            
+            for (let i = 0; i < selections.options.length; i++) {
+                if (selectedColors.includes(selections.options[i].value)) {
+                    selections.options[i].disabled = false
+                }
+                else {
+                    selections.options[i].disabled = true
+                }
+
+            }
+        }
+
+        enableColors()
+
+        selectedSeries.addEventListener('change', (e) => {
+            selectedColors = JSON.parse(e.target.value).colors
+            enableColors()
+            })
