@@ -190,11 +190,14 @@ exports.series_update_get = async (req, res, next) => {
     }
   }
 
+  console.log(series.model, series.brand);
+
   res.render('series_form', {
     title: `Edit ${series.series} Series`,
     // status true is updating not creating
     status: true,
     defaultModel: series.model,
+    defaultBrand: series.brand,
     brands: brandList,
     models: modelList,
     colors: colors,
