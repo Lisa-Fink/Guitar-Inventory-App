@@ -43,6 +43,10 @@ block content
   
 
   h2= 'All ' + title
+
+  a(href='/guitars/create?brand=' + brand._id + '&model=' + model + '&series=' + seriesInfo.series) Add a new #{brand.name} #{model} #{seriesInfo.series} Guitar
+
+
   ul
     each guitar in guitarList
       li 
