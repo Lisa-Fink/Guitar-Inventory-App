@@ -23,7 +23,7 @@ block content
                                         option(value=info selected=((defaultModel == m.model && defaultBrand == id && defaultSeries == s.series) ? 'selected' : false)) #{s.series}
         div 
             label(for='color') Color* (select Brand/Model/Series to view available options):
-            select#color(tye='select' name='color')
+            select#color(tye='select' name='color' required='true')
                 option(value='' disabled selected) Select the Color
                 each c in colors
                     option(value=c disabled selected=(c== defaultColor ? 'selected' : false)) #{c}
