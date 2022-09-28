@@ -68,7 +68,6 @@ exports.guitar_create_post = [
         return next(err);
       }
       if (sameGuitar) {
-        console.log('same');
         // the guitar already exists so redirect to the page
         res.redirect(
           `../brands/${seriesInfo.bName}/${seriesInfo.model}/${seriesInfo.series}/${req.body.serialNum}`
@@ -115,7 +114,6 @@ exports.guitar_update_get = async (req, res, next) => {
   }
 
   const guitar = await GuitarInstance.findById(req.params.id);
-  console.log(guitar);
 
   if (!guitar) {
     const err = new Error('Not found');
@@ -158,6 +156,9 @@ exports.guitar_update_get = async (req, res, next) => {
     copiedSeries.push(copy);
   });
 
+  // adding brand name to the original guitar
+  const originalGuitar = { brandName: brandName.name, ...guitar._doc };
+
   res.render('guitar_instance_form', {
     title: 'Edit Guitar',
     // status true is updating not creating
@@ -173,12 +174,89 @@ exports.guitar_update_get = async (req, res, next) => {
     serialNum: guitar.serialNum,
     defaultColor: guitar.color,
     brandName: brandName.name,
+    originalGuitar: originalGuitar,
   });
 };
 
-exports.guitar_update_post = (req, res, next) => {
-  res.send('incomplete');
-};
+exports.guitar_update_post = [
+  body('price').escape(),
+  body('serialNum').trim().escape(),
+  async (req, res, next) => {
+    const originalGuitar = JSON.parse(req.body.guitar);
+    const formSeries = JSON.parse(req.body.series);
+
+    // check if changed
+    if (
+      originalGuitar.color == req.body.color &&
+      originalGuitar.price == req.body.price &&
+      originalGuitar.serialNum == req.body.serialNum &&
+      originalGuitar.series == formSeries.series &&
+      originalGuitar.model == formSeries.model &&
+      originalGuitar.brand == formSeries.brand
+    ) {
+      res.redirect(
+        `../../brands/${originalGuitar.brandName}/${originalGuitar.model}/${originalGuitar.series}/${originalGuitar.serialNum}`
+      );
+      return;
+    }
+
+    let update = {};
+
+    // if serial number/ series changed, verify that it is a unique serial num to the series
+    if (
+      (originalGuitar.serialNum != req.body.serialNum) |
+      (originalGuitar.series != formSeries.series)
+    ) {
+      const existing = await GuitarInstance.findOne({
+        serialNum: req.body.serialNum,
+        series: formSeries.series,
+      });
+      if (existing) {
+        res.redirect(
+          `../../brands/${formSeries.bName}/${formSeries.model}/${formSeries.series}/${req.body.serialNum}`
+        );
+        return;
+      }
+      if (originalGuitar.serialNum != req.body.serialNum) {
+        update.serialNum = req.body.serialNum;
+      }
+      if (originalGuitar.series != formSeries.series) {
+        update.series = formSeries.series;
+      }
+    }
+    // update the remaining changes made
+    if (originalGuitar.color != req.body.color) {
+      update.color = req.body.color;
+    }
+    if (originalGuitar.price != req.body.price) {
+      update.price = req.body.price;
+    }
+    if (originalGuitar.brand != formSeries.brand) {
+      update.brand = formSeries.brand;
+    }
+    if (originalGuitar.model != formSeries.model) {
+      update.model = formSeries.model;
+    }
+
+    const updateDocument = {
+      $set: update,
+    };
+
+    // save the updated guitar
+    GuitarInstance.updateOne({ _id: originalGuitar._id }, updateDocument).exec(
+      (err) => {
+        if (err) {
+          return next(err);
+        }
+        // redirect to the updated page
+        console.log('guitar updated');
+        res.redirect(
+          `../../brands/${formSeries.bName}/${formSeries.model}/${formSeries.series}/${req.body.serialNum}`
+        );
+      }
+    );
+  },
+];
 
 exports.guitar_delete_get = (req, res, next) => {
   res.send('incomplete');
