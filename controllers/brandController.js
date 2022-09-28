@@ -119,7 +119,7 @@ exports.brand_model_series_instance_detail = async function (req, res, next) {
   });
   const guitarSeries = await Series.findOne({ series: req.params.series });
   const guitar = await GuitarInstance.findOne({
-    serialNum: req.params.serial,
+    serialNum: req.params.serial, series: req.params.series
   });
 
   const guitars = await GuitarInstance.find({ series: req.params.series });
