@@ -4,7 +4,7 @@ const GuitarInstance = require('../models/guitarInstance');
 const Series = require('../models/series');
 
 const { body, validationResult } = require('express-validator');
-const brand = require('../models/brand');
+
 
 exports.series_list = (req, res, next) => {
   res.send('incomplete');
