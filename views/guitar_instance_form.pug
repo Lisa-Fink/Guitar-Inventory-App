@@ -35,7 +35,8 @@ block content
         div  
             label(for='serialNum') Serial Number*: 
             input#serialNum(type='text', placeholder='serial number' required name='serialNum' value=(undefined===serialNum ? '' : serialNum))
-
+        if status 
+            input(id='guitar' name='guitar' type='hidden' value=originalGuitar)
         if status 
             button(type='submit') Update
         else 
