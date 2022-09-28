@@ -5,7 +5,6 @@ const Series = require('../models/series');
 
 const { body, validationResult } = require('express-validator');
 
-
 exports.series_list = (req, res, next) => {
   res.send('incomplete');
 };
@@ -127,29 +126,30 @@ exports.series_create_post = [
       if (sameBrandModelSeries) {
         // the series already exists so redirect to the page
         res.redirect(
-          `../brands/${brandName}/${sameBrandModelSeries.model}/${sameBrandModelSeries.name}`
+          `../brands/${brandName}/${sameBrandModelSeries.model}/${sameBrandModelSeries.series}`
         );
-        return;
-      }
-    });
+      } else {
+        const newSeries = new Series({
+          brand: model.brand,
+          model: model.model,
+          series: req.body.name,
+          stock: 0,
+          strings: 6,
+          colors: req.body['colors[]'],
+          features: features,
+        });
 
-    const newSeries = new Series({
-      brand: model.brand,
-      model: model.model,
-      series: req.body.name,
-      stock: 0,
-      strings: 6,
-      colors: req.body['colors[]'],
-      features: features,
-    });
-
-    newSeries.save((err) => {
-      if (err) {
-        return next(err);
+        newSeries.save((err) => {
+          if (err) {
+            return next(err);
+          }
+          console.log('saved');
+          // redirect to the new page
+          res.redirect(
+            `../brands/${brandName}/${model.model}/${req.body.name}`
+          );
+        });
       }
-      console.log('saved');
-      // redirect to the new page
-      res.redirect(`../brands/${brandName}/${model.model}/${req.body.name}`);
     });
   },
 ];
@@ -321,7 +321,7 @@ exports.series_update_post = [
     // check which keys need to be updated and add to update
     if (originalSeries.series != req.body.name) {
       // if series name changed check if there's a model with the same brand and series name
-      checkSameNameModelBrand = await Series.findOne({
+      const checkSameNameModelBrand = await Series.findOne({
         series: req.body.name,
         model: model.model,
         brand: model.brand,

@@ -48,26 +48,25 @@ exports.model_create_post = [
         if (sameModelNameBrand) {
           // the model already exists so redirect to the page
           res.redirect(`../brands/${brand.name}/${sameModelNameBrand.model}`);
-          return;
+        } else {
+          const gModel = new Guitar({
+            brand: brand._id,
+            model: req.body.model,
+            stock: 0,
+            type: 'Electric Guitar',
+          });
+
+          gModel.save((err) => {
+            if (err) {
+              return next(err);
+            }
+          });
+          // redirect to the new page
+          console.log('model saved');
+          res.redirect(`../brands/${brand.name}/${req.body.model}`);
         }
       }
     );
-
-    const gModel = new Guitar({
-      brand: brand._id,
-      model: req.body.model,
-      stock: 0,
-      type: 'Electric Guitar',
-    });
-
-    gModel.save((err) => {
-      if (err) {
-        return next(err);
-      }
-    });
-    // redirect to the new page
-    console.log('model saved');
-    res.redirect(`../brands/${brand.name}/${req.body.model}`);
   },
 ];
 
@@ -127,53 +126,66 @@ exports.model_update_post = [
       return;
     }
 
-    // update both model name and brand
-    let updateDocument = {
-      $set: { model: req.body.model, brand: brand._id },
-    };
-
-    // Check if model name is the same but brand changed
-    if (originalModel.model == req.body.model) {
-      // update brand
-      updateDocument = {
-        $set: { brand: brand._id },
-      };
-    }
-
-    // Check if brand is the same but model name changed
-    if (originalModel.brand == brand._id) {
-      // update model name
-      updateDocument = {
-        $set: { model: req.body.model },
-      };
-    }
-
-    // find and update all series and guitar instances of the model
-    Series.updateMany({ model: originalModel.model }, updateDocument).exec(
-      (err) => {
+    // Check if brand and model already exists
+    Guitar.findOne({ brand: brand._id, model: req.body.model }).exec(
+      (err, sameModel) => {
         if (err) {
           return next(err);
         }
-      }
-    );
+        if (sameModel) {
+          res.redirect(`../../../brands/${brand.name}/${req.body.model}`);
+        } else {
+          // update both model name and brand
+          let updateDocument = {
+            $set: { model: req.body.model, brand: brand._id },
+          };
 
-    Guitarinstance.updateMany(
-      { model: originalModel.model },
-      updateDocument
-    ).exec((err) => {
-      if (err) {
-        return next(err);
-      }
-    });
-    // update the one model
-    Guitar.updateOne({ model: originalModel.model }, updateDocument).exec(
-      (err) => {
-        if (err) {
-          return next(err);
+          // Check if model name is the same but brand changed
+          if (originalModel.model == req.body.model) {
+            // update brand
+            updateDocument = {
+              $set: { brand: brand._id },
+            };
+          }
+
+          // Check if brand is the same but model name changed
+          if (originalModel.brand == brand._id) {
+            // update model name
+            updateDocument = {
+              $set: { model: req.body.model },
+            };
+          }
+
+          // find and update all series and guitar instances of the model
+          Series.updateMany(
+            { model: originalModel.model },
+            updateDocument
+          ).exec((err) => {
+            if (err) {
+              return next(err);
+            }
+          });
+
+          Guitarinstance.updateMany(
+            { model: originalModel.model },
+            updateDocument
+          ).exec((err) => {
+            if (err) {
+              return next(err);
+            }
+          });
+          // update the one model
+          Guitar.updateOne({ model: originalModel.model }, updateDocument).exec(
+            (err) => {
+              if (err) {
+                return next(err);
+              }
+              // redirect to the new page
+              console.log('model updated');
+              res.redirect(`../../../brands/${brand.name}/${req.body.model}`);
+            }
+          );
         }
-        // redirect to the new page
-        console.log('model updated');
-        res.redirect(`../../../brands/${brand.name}/${req.body.model}`);
       }
     );
   },
