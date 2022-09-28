@@ -39,7 +39,7 @@ exports.brand_detail = async function (req, res, next) {
     title: req.params.name + ' Guitars',
     brand: req.params.name,
     guitarModels: guitarInfo,
-    GuitarInstance: allGuitars,
+    guitarInstance: allGuitars,
   });
 };
 
