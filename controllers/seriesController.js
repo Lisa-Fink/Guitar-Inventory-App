@@ -158,8 +158,26 @@ exports.series_update_get = async (req, res, next) => {
   const brandList = await Brand.find({}, { name: 1 });
   const modelList = await Guitar.find({}, { _id: 0, model: 1, brand: 1 });
 
-  const series = await Series.findById(req.params.id);
+  // validate the id from the url
+  const ObjectId = require('mongoose').Types.ObjectId;
+  function isValidObjectId(id) {
+    if (ObjectId.isValid(id)) {
+      if (String(new ObjectId(id)) === id) return true;
+      return false;
+    }
+    return false;
+  }
+  if (!isValidObjectId(req.params.id)) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
 
+  const series = await Series.findOne({
+    _id: req.params.id,
+    series: req.params.series,
+  });
+  console.log('series', series);
   if (series === null) {
     const err = new Error('Not found');
     err.status = 404;
