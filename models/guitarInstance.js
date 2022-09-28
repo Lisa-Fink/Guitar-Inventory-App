@@ -15,6 +15,7 @@ const GuitarInstanceSchema = new Schema({
       'purple',
       'white',
       'black',
+      'sunburst',
     ],
   },
   price: { type: Number, required: true },
