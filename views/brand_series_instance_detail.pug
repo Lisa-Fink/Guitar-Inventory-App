@@ -12,7 +12,14 @@ block content
     span= ' >  Serial: ' + guitar.serialNum
 
   h1= title
+
+  span
+    a(href='../../../../guitars/' + guitar._id + '/update') Edit This Guitar #{' '}
+    a(href='../../../../guitars/' + guitar._id + '/delete') Delete This Guitar
+
+
   h3= 'This Guitar'
+
   ul
     li= 'Color: ' + guitar.color
     li= 'Price: $' + guitar.price
