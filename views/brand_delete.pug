@@ -12,21 +12,21 @@ block content
   else 
     h3= 'Unable to delete. You must delete the following:'
 
-  if instances
+  if instances.length
     h4= 'Guitars: '
     ul
       each guitar in instances
         li
           a(href=`/brands/${brand}/${guitar.model}/${guitar.series}/${guitar.serialNum}`) #{`${guitar.series} - ${guitar.color}`}
 
-  if series
+  if series.length
     h4= 'Series: '
     ul
       each ser in series
         li
           a(href=`/brands/${brand}/${ser.model}/${ser.series}`) #{ser.series}
 
-  if guitarModels
+  if guitarModels.length
     h4= 'Models: '
     ul
       each mod in guitarModels
