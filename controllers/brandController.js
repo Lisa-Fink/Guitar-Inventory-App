@@ -50,6 +50,7 @@ exports.brand_model_detail = function (req, res, next) {
       const brand = await Brand.findOne({ name: req.params.brand });
       const guitarModel = await Guitar.findOne({
         model: req.params.model,
+        brand: brand._id,
       });
       const guitarSeries = await Series.find({ model: req.params.model });
       const guitars = await GuitarInstance.find({ model: req.params.model });
@@ -80,9 +81,18 @@ exports.brand_model_series_detail = async function (req, res, next) {
   const brand = await Brand.findOne({ name: req.params.brand });
   const guitarModel = await Guitar.findOne({
     model: req.params.model,
+    brand: brand._id,
   });
-  const guitarSeries = await Series.findOne({ series: req.params.series });
-  const guitars = await GuitarInstance.find({ series: req.params.series });
+  const guitarSeries = await Series.findOne({
+    series: req.params.series,
+    model: req.params.model,
+    brand: brand._id,
+  });
+  const guitars = await GuitarInstance.find({
+    series: req.params.series,
+    model: req.params.model,
+    brand: brand._id,
+  });
 
   if (!brand | !guitarModel | !guitarSeries) {
     const err = new Error('Not found');
@@ -116,13 +126,25 @@ exports.brand_model_series_instance_detail = async function (req, res, next) {
   const brand = await Brand.findOne({ name: req.params.brand });
   const guitarModel = await Guitar.findOne({
     model: req.params.model,
+    brand: brand._id,
   });
-  const guitarSeries = await Series.findOne({ series: req.params.series });
+  const guitarSeries = await Series.findOne({
+    series: req.params.series,
+    model: req.params.model,
+    brand: brand._id,
+  });
   const guitar = await GuitarInstance.findOne({
-    serialNum: req.params.serial, series: req.params.series
+    serialNum: req.params.serial,
+    series: req.params.series,
+    model: req.params.model,
+    brand: brand._id,
   });
 
-  const guitars = await GuitarInstance.find({ series: req.params.series });
+  const guitars = await GuitarInstance.find({
+    series: req.params.series,
+    model: req.params.model,
+    brand: brand._id,
+  });
 
   if (!brand | !guitarModel | !guitarSeries | !guitar) {
     const err = new Error('Not found');
@@ -311,7 +333,7 @@ exports.brand_delete_post = async (req, res, next) => {
   const guitarModels = await Guitar.find({ brand: id });
   const series = await Series.find({ brand: id });
 
-  if (guitarInstance.length && guitarModels.length && !series.length) {
+  if (guitarInstance.length | guitarModels.length | series.length) {
     // can't delete render the same form as get
     res.render('brand_delete', {
       del: false,
