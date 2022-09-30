@@ -42,7 +42,7 @@ block content
         
   
 
-  h2= 'All ' + title
+  h2= 'All ' + title + ' Guitars'
 
   a(href='/guitars/create?brand=' + brand._id + '&model=' + model + '&series=' + seriesInfo.series) Add a new #{brand.name} #{model} #{seriesInfo.series} Guitar
 
@@ -53,4 +53,4 @@ block content
         a(href=`/brands/${brand.name}/${model}/${seriesInfo.series}/${guitar.serialNum}`) #{guitar.series}
         span= ` - Color: ${guitar.color}, Price:  $${guitar.price}`
     else 
-      li The are no guitars
+      li There are no guitars
