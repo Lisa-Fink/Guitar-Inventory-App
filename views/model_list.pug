@@ -1,0 +1,18 @@
+extends layout 
+
+block content 
+    h1= title 
+    a(href='models/create') Add a new Model 
+    ul 
+        each brand in brandList 
+            h3= brand.name + ' Models'
+            a(href='models/create?brand=' + brand.name) Add a new #{brand.name} Model
+
+            -let count = false
+            each model in modelList
+                if (model.brand.toString() == brand._id.toString())
+                    -count = true
+                    li 
+                        a(href=`../brands/${brand.name}/${model.model}`) #{model.model}
+            if !count
+                li There are no models

@@ -6,8 +6,15 @@ const Series = require('../models/series');
 const { body, validationResult } = require('express-validator');
 const brand = require('../models/brand');
 
-exports.model_list = (req, res, next) => {
-  res.send('incomplete');
+exports.model_list = async (req, res, next) => {
+  const brandList = await Brand.find({}, { name: 1 });
+  const modelList = await Guitar.find({}, { model: 1, _id: 0, brand: 1 });
+
+  res.render('model_list', {
+    brandList: brandList,
+    modelList: modelList,
+    title: 'Models',
+  });
 };
 
 exports.model_create_get = async (req, res, next) => {
