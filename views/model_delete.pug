@@ -1,0 +1,29 @@
+extends layout 
+
+block content 
+
+  h1= title
+
+  if (del == true)
+    h3= `Are you sure you want to delete ${brand} - ${model} Model?`
+    form(method='POST' action='')
+      input(type='hidden', name='modelID', required='true', value=id)
+      button(type='submit') confirm
+  else 
+    h3= 'Unable to delete. You must delete the following:'
+
+    if instances.length
+        h4= 'Guitars: '
+        ul
+        each guitar in instances
+            li
+                a(href=`/brands/${brand}/${guitar.model}/${guitar.series}/${guitar.serialNum}`) #{`${guitar.series} - ${guitar.color}`}
+
+    if series.length
+        h4= 'Series: '
+        ul
+        each ser in series
+            li
+                a(href=`/brands/${brand}/${ser.model}/${ser.series}`) #{ser.series}
+
+    

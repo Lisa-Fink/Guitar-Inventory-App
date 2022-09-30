@@ -1,10 +1,11 @@
 const Brand = require('../models/brand');
 const Guitar = require('../models/guitar');
-const Guitarinstance = require('../models/guitarInstance');
+const GuitarInstance = require('../models/guitarInstance');
 const Series = require('../models/series');
 
 const { body, validationResult } = require('express-validator');
 const brand = require('../models/brand');
+const { Model } = require('mongoose');
 
 exports.model_list = async (req, res, next) => {
   const brandList = await Brand.find({}, { name: 1 });
@@ -173,7 +174,7 @@ exports.model_update_post = [
             }
           });
 
-          Guitarinstance.updateMany(
+          GuitarInstance.updateMany(
             { model: originalModel.model },
             updateDocument
           ).exec((err) => {
@@ -198,10 +199,110 @@ exports.model_update_post = [
   },
 ];
 
-exports.model_delete_get = (req, res, next) => {
-  res.send('incomplete');
+exports.model_delete_get = async (req, res, next) => {
+  // validate the id from the url
+  const ObjectId = require('mongoose').Types.ObjectId;
+  function isValidObjectId(id) {
+    if (ObjectId.isValid(id)) {
+      if (String(new ObjectId(id)) === id) return true;
+      return false;
+    }
+    return false;
+  }
+  if (!isValidObjectId(req.params.id)) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const model = await Guitar.findById(req.params.id);
+  if (!model | (model.model !== req.params.model)) {
+    const err = new Error('Model not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const brand = await Brand.findById(model.brand, { name: 1 });
+  const series = await Series.find({ brand: brand._id, model: model.model });
+  const guitarInstance = await GuitarInstance.find({
+    brand: brand._id,
+    model: model.model,
+  });
+
+  if (!series.length && !guitarInstance.length) {
+    // can delete: go to delete page with confirm button
+    res.render('model_delete', {
+      del: true,
+      brand: brand.name,
+      model: model.model,
+      id: model._id,
+      title: `Delete ${brand.name} - ${model.model} Model`,
+    });
+  } else {
+    // unable to delete, need to first delete guitar instance and/or series or the model
+    res.render('model_delete', {
+      del: false,
+      brand: brand.name,
+      instances: guitarInstance,
+      series: series,
+      title: `Delete ${brand.name} - ${model.model} Model`,
+    });
+  }
 };
 
-exports.model_delete_post = (req, res, next) => {
-  res.send('incomplete');
+exports.model_delete_post = async (req, res, next) => {
+  const modelID = req.body.modelID;
+
+  // check if delete is valid
+
+  // validate the id from the url
+  const ObjectId = require('mongoose').Types.ObjectId;
+  function isValidObjectId(id) {
+    if (ObjectId.isValid(id)) {
+      if (String(new ObjectId(id)) === id) return true;
+      return false;
+    }
+    return false;
+  }
+  if (!isValidObjectId(req.params.id)) {
+    const err = new Error('Not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const model = await Guitar.findById(req.params.id);
+  if (
+    !model |
+    ((model.model !== req.params.model) | (modelID !== req.params.id))
+  ) {
+    const err = new Error('Model not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const brand = await Brand.findById(model.brand, { name: 1 });
+  const series = await Series.find({ brand: model.brand, model: model.model });
+  const guitarInstance = await GuitarInstance.find({
+    brand: model.brand,
+    model: model.model,
+  });
+
+  if (series.length | guitarInstance.length) {
+    // unable to delete, need to first delete guitar instance and/or series or the model
+    res.render('model_delete', {
+      del: false,
+      brand: brand.name,
+      instances: guitarInstance,
+      series: series,
+      title: `Delete ${brand.name} - ${model.model} Model`,
+    });
+  }
+  // can delete
+  Guitar.findByIdAndRemove(modelID, (err) => {
+    if (err) {
+      return next(err);
+    }
+    // success go to model list
+    res.redirect('../../');
+  });
 };
