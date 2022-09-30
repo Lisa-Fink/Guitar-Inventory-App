@@ -5,8 +5,20 @@ const Series = require('../models/series');
 
 const { body, validationResult } = require('express-validator');
 
-exports.series_list = (req, res, next) => {
-  res.send('incomplete');
+exports.series_list = async (req, res, next) => {
+  const brandList = await Brand.find({}, { name: 1 });
+  const modelList = await Guitar.find({}, { _id: 0, model: 1, brand: 1 });
+  const seriesList = await Series.find(
+    {},
+    { _id: 0, model: 1, brand: 1, series: 1 }
+  );
+
+  res.render('series_list', {
+    brandList: brandList,
+    modelList: modelList,
+    seriesList: seriesList,
+    title: 'Series',
+  });
 };
 
 exports.series_create_get = async (req, res, next) => {
