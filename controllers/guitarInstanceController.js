@@ -266,6 +266,20 @@ exports.guitar_delete_post = (req, res, next) => {
   res.send('incomplete');
 };
 
-exports.guitar_list = (req, res, next) => {
-  res.send('incomplete');
+exports.guitar_list = async (req, res, next) => {
+  const brandList = await Brand.find({}, { name: 1 });
+  const modelList = await Guitar.find({}, { _id: 0, model: 1, brand: 1 });
+  const seriesList = await Series.find(
+    {},
+    { _id: 0, model: 1, brand: 1, series: 1 }
+  );
+  const guitarList = await GuitarInstance.find({});
+
+  res.render('guitar_instance_list', {
+    brandList: brandList,
+    modelList: modelList,
+    seriesList: seriesList,
+    guitarList: guitarList,
+    title: 'Guitars',
+  });
 };
