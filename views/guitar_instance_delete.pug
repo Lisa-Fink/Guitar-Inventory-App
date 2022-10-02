@@ -1,0 +1,11 @@
+extends layout 
+
+block content 
+
+    h1= title
+
+
+    h3= `Are you sure you want to delete ${title}?`
+    form(method='POST' action='')
+        input(type='hidden', name='guitarInstanceID', required='true', value=id)
+        button(type='submit') confirm

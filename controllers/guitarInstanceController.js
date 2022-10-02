@@ -258,12 +258,64 @@ exports.guitar_update_post = [
   },
 ];
 
-exports.guitar_delete_get = (req, res, next) => {
-  res.send('incomplete');
+exports.guitar_delete_get = async (req, res, next) => {
+  // validate the id from the url
+  const ObjectId = require('mongoose').Types.ObjectId;
+  function isValidObjectId(id) {
+    if (ObjectId.isValid(id)) {
+      if (String(new ObjectId(id)) === id) return true;
+      return false;
+    }
+    return false;
+  }
+  if (!isValidObjectId(req.params.id)) {
+    const err = new Error('Series not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const guitarInstance = await GuitarInstance.findById(req.params.id);
+  if (!guitarInstance) {
+    const err = new Error('Guitar not found');
+    err.status = 404;
+    return next(err);
+  }
+  const brand = await Brand.findById(guitarInstance.brand, { name: 1 });
+
+  res.render('guitar_instance_delete', {
+    brand: brand.name,
+    model: guitarInstance.model,
+    id: req.params.id,
+    series: guitarInstance.series,
+    title: `Delete ${brand.name} - ${guitarInstance.model} - ${guitarInstance.series} - Serial Number: ${guitarInstance.serialNum} Guitar`,
+  });
 };
 
-exports.guitar_delete_post = (req, res, next) => {
-  res.send('incomplete');
+exports.guitar_delete_post = async (req, res, next) => {
+  const guitarInstanceID = req.body.guitarInstanceID;
+
+  // validate the id from the url
+  const ObjectId = require('mongoose').Types.ObjectId;
+  function isValidObjectId(id) {
+    if (ObjectId.isValid(id)) {
+      if (String(new ObjectId(id)) === id) return true;
+      return false;
+    }
+    return false;
+  }
+  if (!isValidObjectId(req.params.id) | (req.params.id !== guitarInstanceID)) {
+    const err = new Error('Guitar not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  GuitarInstance.findByIdAndRemove(guitarInstanceID, (err) => {
+    if (err) {
+      return next(err);
+    }
+    // success go to guitar list
+    res.redirect('../');
+  });
 };
 
 exports.guitar_list = async (req, res, next) => {

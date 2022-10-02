@@ -18,10 +18,10 @@ router.get('/:id/update', guitarInstanceController.guitar_update_get);
 // POST request to update a guitar
 router.post('/:id/update', guitarInstanceController.guitar_update_post);
 
-// // Get request to delete a guitar
-// router.get('/:guitar/delete', guitarInstanceController.guitar_delete_get);
+// Get request to delete a guitar
+router.get('/:id/delete', guitarInstanceController.guitar_delete_get);
 
-// // POST request to update a guitar
-// router.post('/:guitar/delete', guitarInstanceController.guitar_delete_post);
+// POST request to update a guitar
+router.post('/:id/delete', guitarInstanceController.guitar_delete_post);
 
 module.exports = router;
