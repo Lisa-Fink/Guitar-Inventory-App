@@ -18,10 +18,10 @@ router.get('/:series/:id/update', seriesController.series_update_get);
 // POST request to update a series
 router.post('/:series/:id/update', seriesController.series_update_post);
 
-// // Get request to delete a series
-// router.get('/:series/delete', seriesController.series_delete_get);
+// Get request to delete a series
+router.get('/:series/:id/delete', seriesController.series_delete_get);
 
-// // POST request to update a series
-// router.post('/:series/delete', seriesController.series_delete_post);
+// POST request to update a series
+router.post('/:series/:id/delete', seriesController.series_delete_post);
 
 module.exports = router;

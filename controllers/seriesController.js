@@ -406,10 +406,113 @@ exports.series_update_post = [
   },
 ];
 
-// exports.series_delete_get = (req, res, next) => {
-//   res.send('incomplete');
-// };
+exports.series_delete_get = async (req, res, next) => {
+  // validate the id from the url
+  const ObjectId = require('mongoose').Types.ObjectId;
+  function isValidObjectId(id) {
+    if (ObjectId.isValid(id)) {
+      if (String(new ObjectId(id)) === id) return true;
+      return false;
+    }
+    return false;
+  }
+  if (!isValidObjectId(req.params.id)) {
+    const err = new Error('Series not found');
+    err.status = 404;
+    return next(err);
+  }
 
-// exports.series_delete_post = (req, res, next) => {
-//   res.send('incomplete');
-// };
+  const series = await Series.findById(req.params.id);
+  if (!series | (series.series !== req.params.series)) {
+    const err = new Error('Series not found');
+    err.status = 404;
+    return next(err);
+  }
+  const brand = await Brand.findById(series.brand, { name: 1 });
+
+  const guitarInstance = await GuitarInstance.find({
+    brand: series.brand,
+    model: series.model,
+    series: series.series,
+  });
+  if (!guitarInstance.length) {
+    // can delete: go to delete page with confirm button
+    res.render('series_delete', {
+      del: true,
+      brand: brand.name,
+      model: series.model,
+      id: series._id,
+      series: series.series,
+      title: `Delete ${brand.name} - ${series.model} - ${series.series} Series`,
+    });
+  } else {
+    // unable to delete, need to first delete all guitar instances with the series
+    res.render('series_delete', {
+      del: false,
+      brand: brand.name,
+      model: series.model,
+      id: series._id,
+      instances: guitarInstance,
+      series: series.series,
+      title: `Delete ${brand.name} - ${series.model} - ${series.series} Series`,
+    });
+  }
+};
+
+exports.series_delete_post = async (req, res, next) => {
+  const seriesID = req.body.seriesID;
+
+  // check if delete is valid
+
+  // validate the id from the url
+  const ObjectId = require('mongoose').Types.ObjectId;
+  function isValidObjectId(id) {
+    if (ObjectId.isValid(id)) {
+      if (String(new ObjectId(id)) === id) return true;
+      return false;
+    }
+    return false;
+  }
+  if (!isValidObjectId(req.params.id)) {
+    const err = new Error('Series not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const series = await Series.findById(req.params.id);
+  if (
+    !series |
+    ((series.series !== req.params.series) | (seriesID !== req.params.id))
+  ) {
+    const err = new Error('Series not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  const brand = await Brand.findById(series.brand, { name: 1 });
+  const guitarInstance = await GuitarInstance.find({
+    brand: series.brand,
+    model: series.model,
+    series: series.series,
+  });
+
+  if (guitarInstance.length) {
+    // unable to delete, need to first delete guitar instance and/or series or the model
+    res.render('series_delete', {
+      del: true,
+      brand: brand.name,
+      model: series.model,
+      id: series._id,
+      series: series.series,
+      title: `Delete ${brand.name} - ${series.model} - ${series.series} Series`,
+    });
+  }
+  // can delete
+  Series.findByIdAndRemove(seriesID, (err) => {
+    if (err) {
+      return next(err);
+    }
+    // success go to series list
+    res.redirect('../../');
+  });
+};
