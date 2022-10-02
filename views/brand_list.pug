@@ -1,12 +1,14 @@
 extends layout 
 
 block content
-  h1= title 
-  ul
+  h2= title 
+    div(class='add')
+        a(href='../brands/create') Add a new brand
+  ul(class='brand')
     each brand in brand_list
       li 
         a(href=brand.url) #{brand.name}
     else 
       li The are no brands
 
-  a(href='../brands/create') Add a new brand
+  

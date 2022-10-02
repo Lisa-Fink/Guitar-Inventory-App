@@ -6,3 +6,88 @@ body {
 a {
   color: #00B7FF;
 }
+
+h1, h2 {
+    text-align: center
+}
+
+.header h1 {
+    font-size: 58px;
+}
+
+h2 {
+    font-size: 40px;
+    margin-bottom: 0;
+}
+
+.content h3 {
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 0;
+    color: rgb(27, 27, 27);
+}
+
+h4 {
+    font-size: 20px;
+    margin-bottom: 0;
+    color: rgb(32, 32, 32);
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.content {
+    width: 100%
+}
+
+.left-nav {
+    padding-top: 100px;
+}
+
+.left-nav li {
+    list-style: none;
+    padding: 4px;
+}
+
+.left-nav ul {
+    padding: 0
+}
+
+a {
+    text-decoration: none;
+    color: rgb(46, 46, 46);
+    font-weight: bold;
+}
+
+a:hover {
+    color: rgb(97, 97, 97);
+}
+
+.add {
+    font-size: 16px;
+    text-align: center;
+}
+
+.brand, .model, .series {
+    list-style: none;
+    display: flex;
+    font-size: 28px;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.all {
+    text-align: center;
+    list-style: none;
+}
+
+.series-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    font-size: 18px;
+}

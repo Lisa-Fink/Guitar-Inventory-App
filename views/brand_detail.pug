@@ -5,22 +5,24 @@ block content
     a(href='/brands') #{'Brands'}
     span= ' > ' + brand
 
-  h1= title
-  span
-    a(href='/brands/' + brand + '/update') Edit #{brand} Brand #{' '}
-    a(href='/brands/' + brand + '/delete') Delete #{brand} Brand 
+  h2= title
+  div(class='add')
+    a(href='/brands/' + brand + '/update') Edit #{brand} Brand
+    span=' - ' 
+    a(href='/brands/' + brand + '/delete') #{' '} Delete #{brand} Brand 
 
-  h2= 'Models'
-  a(href='/models/create?brand=' + brand) Add a new #{brand} Model
-  ul
+  h3= 'Models'
+  div(class='add')
+    a(href='/models/create?brand=' + brand) Add a new #{brand} Model
+  ul(class='model')
     each guitar in guitarModels
         li 
             a(href='/brands/' + brand + '/' + guitar.model) #{guitar.model}
     else 
         li= 'No Models'
 
-  h2= `All ` +  title
-  ul
+  h3= `All ` +  title
+  ul(class='all')
     each instance in guitarInstance
         li 
             a(href= `${brand}/${instance.model}/${instance.series}/${instance.serialNum}`) #{instance.series}

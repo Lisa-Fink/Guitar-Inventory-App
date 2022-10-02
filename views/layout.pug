@@ -4,29 +4,34 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    div(class='left-nav')
-      div
-        ul 
-          li 
-            a(href='/') #{'Home'}
-          li 
-            a(href='/brands') #{'All Brands'}
-          li 
-            a(href='/models') #{'All Guitar Models'}
-          li 
-            a(href='/series') #{'All Guitar Series'}
-          li 
-            a(href='/guitars') #{'All Guitars'}
+    
+    div(class='container')
+        div(class='left-nav')
+            
+            ul 
+                li 
+                    a(href='/') #{'Home'}
+                li 
+                    a(href='/brands') #{'All Brands'}
+                li 
+                    a(href='/models') #{'All Guitar Models'}
+                li 
+                    a(href='/series') #{'All Guitar Series'}
+                li 
+                    a(href='/guitars') #{'All Guitars'}
 
-        h3= 'Add to Catalog'
-        ul 
-          li 
-            a(href='/brands/create') #{'Add a Brand'}
-          li
-            a(href='/models/create') #{'Add a Guitar Model'}
-          li
-            a(href='/series/create') #{'Add a Guitar Series'}
-          li
-            a(href='/guitars/create') #{'Add a Guitar Instance'}
-    div(class='content')
-      block content
+            h3= 'Add to Catalog'
+            
+            ul 
+                li 
+                    a(href='/brands/create') #{'Add a Brand'}
+                li
+                    a(href='/models/create') #{'Add a Guitar Model'}
+                li
+                    a(href='/series/create') #{'Add a Guitar Series'}
+                li
+                    a(href='/guitars/create') #{'Add a Guitar Instance'}
+        div(class='content')
+          div(class='header')
+            h1= 'Fake Guitar Store Catalog'
+          block content

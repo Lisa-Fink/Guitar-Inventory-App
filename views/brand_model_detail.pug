@@ -8,23 +8,25 @@ block content
     span= ' > ' + model
 
 
-  h1= title
-  span
-    a(href='../../models/' + model + '/' + modelID + '/update') Edit #{model} Model #{' '}
+  h2= title
+  div(class='add')
+    a(href='../../models/' + model + '/' + modelID + '/update') Edit #{model} Model 
+    span=' - ' 
     a(href='../../models/' + model + '/' + modelID + '/delete') Delete #{model} Model
 
-  h2= model + ' Series'
-  a(href='/series/create?brand=' + brand._id + '&model=' + model) Add a new #{brand.name} #{model} Series
+  h3= model + ' Series'
+  div(class='add')
+    a(href='/series/create?brand=' + brand._id + '&model=' + model) Add a new #{brand.name} #{model} Series
 
-  ul
+  ul(class='series')
     each guitar in seriesList
       li 
         a(href= model + '/' + guitar.series) #{guitar.series}
     else 
       li The are no guitars
 
-  h2= 'All ' + title
-  ul
+  h3= 'All ' + title
+  ul(class='all')
     each guitar in guitarList
       li 
         a(href= model + '/' + guitar.series + '/' + guitar.serialNum) #{guitar.series}
