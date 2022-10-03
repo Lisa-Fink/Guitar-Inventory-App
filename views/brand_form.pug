@@ -8,7 +8,7 @@ block content
       input#name(type='text', placeholder='Name of brand' name='name' maxlength='100' required='true' value=(undefined===brand ? '' : brand))
     div  
       label(for='about') About: 
-      textarea#name(type='text', placeholder='About the brand' name='about') #{undefined===about ? '' : about}
+      textarea#about(type='text', placeholder='About the brand' name='about') #{undefined===about ? '' : about}
     if status 
         button(type='submit') Update
     else 

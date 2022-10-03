@@ -1,5 +1,31 @@
 extends layout
 
 block content
-    h2= 'Welcome to ' + title
-    a(href='./brands') Brands
+    h2= 'Welcome to ' + title + ' Catalog'
+    h4= 'We love guitars!'
+    h3= 'View'
+    ul(class='index-list')
+        li 
+            a(href='./brands') Brands
+        li= ' - '
+        li 
+            a(href='./models') Models
+        li= ' - '
+        li 
+            a(href='./series') Series
+        li= ' - '
+        li 
+            a(href='./guitars') Guitars
+    h3= 'Add'
+    ul(class='index-list')
+        li 
+            a(href='./brands/create') Brands
+        li= ' - '
+        li 
+            a(href='./models/create') Models
+        li= ' - '
+        li 
+            a(href='./series/create') Series
+        li= ' - '
+        li 
+            a(href='./guitars/create') Guitars

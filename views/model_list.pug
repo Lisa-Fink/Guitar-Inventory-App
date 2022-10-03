@@ -6,7 +6,7 @@ block content
     ul 
         each brand in brandList 
             h3= brand.name + ' Models'
-            a(href='models/create?brand=' + brand.name) Add a new #{brand.name} Model
+            a(class='add-light' href='models/create?brand=' + brand.name) Add a new #{brand.name} Model
 
             -let count = false
             each model in modelList
