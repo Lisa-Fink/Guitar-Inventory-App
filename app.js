@@ -9,13 +9,13 @@ const brandRouter = require('./routes/brand');
 const modelRouter = require('./routes/g_model');
 const seriesRouter = require('./routes/series');
 const guitarInstanceRouter = require('./routes/guitarInstance');
+require('dotenv').config();
 
 var app = express();
 
 // Set up mongoose connection
 const mongoose = require('mongoose');
-const mongoDB =
-  'mongodb+srv://lisafink:guitarstore@cluster0.5u1lxf2.mongodb.net/?retryWrites=true&w=majority';
+const mongoDB = process.env.MONGO_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
