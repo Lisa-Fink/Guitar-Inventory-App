@@ -25,19 +25,22 @@ block content
         div 
             h4= 'Features:'
             ul 
-            each feature in seriesInfo.features 
-                li= feature
+                each feature in seriesInfo.features 
+                    li= feature
 
     if (seriesInfo.colors.length)
         div
             h4= 'Colors:'
             ul
-            each color in seriesInfo.colors 
-                li= color
+                each color in seriesInfo.colors 
+                    li= color
+    div 
+        h4= `${seriesInfo.stock} In Stock`
     if (lowPrice)
         div 
-        h4= 'Price: '
-        p= 'From $' + lowPrice
+            h4= 'Price: '
+            span= 'From $' + lowPrice
+
 
         
         
