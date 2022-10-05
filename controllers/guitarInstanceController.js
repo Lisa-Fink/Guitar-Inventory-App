@@ -87,6 +87,20 @@ exports.guitar_create_post = [
           if (err) {
             return next(err);
           }
+          Series.updateOne(
+            {
+              brand: seriesInfo.brand,
+              model: seriesInfo.model,
+              series: seriesInfo.series,
+            },
+            { $inc: { stock: 1 } },
+            (err) => {
+              if (err) {
+                console.log(err);
+              }
+            }
+          );
+
           console.log('new guitar saved');
           // redirect to the new page
           res.redirect(
@@ -311,10 +325,23 @@ exports.guitar_delete_post = async (req, res, next) => {
     return next(err);
   }
 
-  GuitarInstance.findByIdAndRemove(guitarInstanceID, (err) => {
+  GuitarInstance.findByIdAndRemove(guitarInstanceID, (err, guitar) => {
     if (err) {
       return next(err);
     }
+    Series.updateOne(
+      {
+        brand: guitar.brand,
+        model: guitar.model,
+        series: guitar.series,
+      },
+      { $inc: { stock: -1 } },
+      (err, res) => {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
     // success go to guitar list
     res.redirect('../');
   });
