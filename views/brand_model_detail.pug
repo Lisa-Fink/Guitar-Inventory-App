@@ -14,6 +14,10 @@ block content
     span=' - ' 
     a(href='../../models/' + model + '/' + modelID + '/delete') Delete #{model} Model
 
+  if about
+    h4= 'About'
+    p(class='about')= about
+
   h3= model + ' Series'
   div(class='add')
     a(href='/series/create?brand=' + brand._id + '&model=' + model) Add a new #{brand.name} #{model} Series

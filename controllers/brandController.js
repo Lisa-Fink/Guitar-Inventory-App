@@ -38,6 +38,7 @@ exports.brand_detail = async function (req, res, next) {
   res.render('brand_detail', {
     title: req.params.name + ' Guitars',
     brand: req.params.name,
+    about: brandInfo.about,
     guitarModels: guitarInfo,
     guitarInstance: allGuitars,
   });
@@ -63,6 +64,7 @@ exports.brand_model_detail = function (req, res, next) {
       res.render('brand_model_detail', {
         title: req.params.brand + ' ' + req.params.model + 's',
         model: guitarModel.model,
+        about: guitarModel.description,
         modelID: guitarModel._id,
         guitarList: guitars,
         seriesList: guitarSeries,

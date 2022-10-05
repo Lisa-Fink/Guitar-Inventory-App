@@ -9,8 +9,11 @@ block content
   div(class='add')
     a(href='/brands/' + brand + '/update') Edit #{brand} Brand
     span=' - ' 
-    a(href='/brands/' + brand + '/delete') #{' '} Delete #{brand} Brand 
-
+    a(href='/brands/' + brand + '/delete') #{' '} Delete #{brand} Brand
+  if about
+    h4= 'About'
+    p(class='about')= about
+    
   h3= 'Models'
   div(class='add')
     a(href='/models/create?brand=' + brand) Add a new #{brand} Model
