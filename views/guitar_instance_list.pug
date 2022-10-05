@@ -2,7 +2,7 @@ extends layout
 
 block content 
     h2= title 
-    a(href='guitars/create') Add a new Guitar
+    a(href='../guitars/create') Add a new Guitar
     ul 
         each brand in brandList 
             h3= brand.name
@@ -17,7 +17,7 @@ block content
                             -seriesCount = true
                             div(class='guitar-list-series')
                                 h5= series.series
-                                a(class='add-light'  href=`guitars/create?brand=${brand._id}&model=${model.model}&series=${series.series}`) Add a new #{series.series} Guitar
+                                a(class='add-light'  href=`../guitars/create?brand=${brand._id}&model=${model.model}&series=${series.series}`) Add a new #{series.series} Guitar
 
                                 -let guitarCount = false
                                 each guitar in guitarList

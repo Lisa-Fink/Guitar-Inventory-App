@@ -2,7 +2,7 @@ extends layout
 
 block content 
     h2= title 
-    a(href='series/create') Add a new Series
+    a(href='../series/create') Add a new Series
     ul 
         each brand in brandList 
             h3= brand.name
@@ -11,7 +11,7 @@ block content
                 if (model.brand.toString() == brand._id.toString())
                     -modelCount = true
                     h4= model.model + 's'
-                    a(class='add-light' href=`series/create?brand=${brand._id}&model=${model.model}`) Add a new #{brand.name} #{model.model} Series
+                    a(class='add-light' href=`../series/create?brand=${brand._id}&model=${model.model}`) Add a new #{brand.name} #{model.model} Series
                     -let count = false
                     each series in seriesList
                         if (series.model == model.model && series.brand.toString() == brand._id.toString())
