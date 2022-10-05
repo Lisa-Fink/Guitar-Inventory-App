@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const GuitarSchema = new Schema({
   brand: { type: Schema.Types.ObjectId, ref: 'Brand', required: true },
   model: { type: String, required: true },
-  stock: Number,
   description: { type: String },
   type: {
     type: String,
