@@ -24,6 +24,7 @@ exports.guitar_create_get = async (req, res, next) => {
     'white',
     'black',
     'sunburst',
+    'silver',
   ];
 
   // created copy because the original isn't passing in colors
@@ -141,6 +142,7 @@ exports.guitar_update_get = async (req, res, next) => {
     'white',
     'black',
     'sunburst',
+    'silver',
   ];
 
   // created copy because the original isn't passing in colors

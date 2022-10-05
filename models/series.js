@@ -18,6 +18,7 @@ const SeriesSchema = new Schema({
         'white',
         'black',
         'sunburst',
+        'silver',
       ],
     },
   ],

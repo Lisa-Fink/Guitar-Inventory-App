@@ -35,6 +35,7 @@ exports.series_create_get = async (req, res, next) => {
     { name: 'white', checked: false },
     { name: 'black', checked: false },
     { name: 'sunburst', checked: false },
+    { name: 'silver', checked: false },
   ];
 
   res.render('series_form', {
@@ -96,6 +97,7 @@ exports.series_create_post = [
         { name: 'white', checked: false },
         { name: 'black', checked: false },
         { name: 'sunburst', checked: false },
+        { name: 'silver', checked: false },
       ];
 
       for (let color of colorList) {
@@ -210,6 +212,7 @@ exports.series_update_get = async (req, res, next) => {
     { name: 'white', checked: false },
     { name: 'black', checked: false },
     { name: 'sunburst', checked: false },
+    { name: 'silver', checked: false },
   ];
 
   for (let seriesColor of series.colors) {
@@ -285,6 +288,7 @@ exports.series_update_post = [
         { name: 'white', checked: false },
         { name: 'black', checked: false },
         { name: 'sunburst', checked: false },
+        { name: 'silver', checked: false },
       ];
 
       for (let color of colorList) {
