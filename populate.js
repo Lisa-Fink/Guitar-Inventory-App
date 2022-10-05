@@ -491,7 +491,7 @@ The RR Minion JS1X offers a poplar body, speedy bolt-on maple neck with graphite
     gibson,
     'Les Paul',
     'yellow',
-    'JEM7VP',
+    'Les Paul Standard 50s Faded',
     2499.99,
     '215920036'
   );
