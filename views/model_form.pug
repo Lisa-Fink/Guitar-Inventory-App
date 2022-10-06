@@ -11,9 +11,13 @@ block content
         option(value='' disabled selected) Select the brand
         for b in brands
           option(value=b selected=((defaultBrand == b.name) ? 'selected' : false)) #{b.name}
-
+    div
       label(for='model') Model*: 
       input#model(type='text', placeholder='Name of model' name='model' required='true' value=(undefined===editModel? '' : editModel))
+    div
+      label(for='description') About: 
+      textarea#description(type='text', placeholder='About the model' name='description') #{undefined===editDescription? '' : editDescription}
+
     if status 
       button(type='submit') Update 
     else 

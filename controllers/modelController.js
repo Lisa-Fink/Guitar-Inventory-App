@@ -31,6 +31,7 @@ exports.model_create_get = async (req, res, next) => {
 
 exports.model_create_post = [
   body('model', 'Model name required').trim().escape(),
+  body('description').trim().escape(),
   async (req, res, next) => {
     // create a new model
     // default include type of 'Electric Guitar' (future update could include different types)
@@ -60,6 +61,7 @@ exports.model_create_post = [
           const gModel = new Guitar({
             brand: brand._id,
             model: req.body.model,
+            description: req.body.description,
             stock: 0,
             type: 'Electric Guitar',
           });
@@ -100,19 +102,18 @@ exports.model_update_get = async (req, res, next) => {
     brands: brandList,
     defaultBrand: brand.name,
     editModel: gModel.model,
+    editDescription: gModel.description,
   });
 };
 
 exports.model_update_post = [
   body('model', 'Model name required').trim().escape(),
+  body('description').trim().escape(),
   async (req, res, next) => {
     const originalModel = await Guitar.findOne({
       model: req.params.model,
       _id: req.params.id,
     });
-    // create a new model
-    // default include type of 'Electric Guitar' (future update could include different types)
-    // default stock of 0
     const errors = validationResult(req);
     const brand = JSON.parse(req.body.brand);
     // req.body.model = new model name
@@ -124,78 +125,84 @@ exports.model_update_post = [
         };
     }
 
-    // Check if original model or brand are the same
+    // Check if anything changed
     if (
       originalModel.model == req.body.model &&
-      originalModel.brand == brand._id
+      originalModel.brand == brand._id &&
+      originalModel.description == req.body.description
     ) {
       // nothing changed
       res.redirect(`../../../brands/${brand.name}/${originalModel.model}`);
       return;
     }
-
+    // update model name, brand, and description
+    let updates = {};
+    let otherChanges = {};
     // Check if brand and model already exists
-    Guitar.findOne({ brand: brand._id, model: req.body.model }).exec(
-      (err, sameModel) => {
+    if (
+      (originalModel.model != req.body.model) |
+      (originalModel.brand != brand._id)
+    ) {
+      const sameModelBrand = await Guitar.findOne({
+        brand: brand._id,
+        model: req.body.model,
+      });
+      if (sameModelBrand) {
+        res.redirect(`../../../brands/${brand.name}/${req.body.model}`);
+        return;
+      }
+      // Check if model name needs to update
+      if (originalModel.model != req.body.model) {
+        updates.model = req.body.model;
+        otherChanges.model = req.body.model;
+      }
+      // Check if brand needs to update
+      if (originalModel.brand != brand._id) {
+        updates.brand = brand._id;
+        otherChanges.brand = brand._id;
+      }
+      changedModel = {
+        $set: otherChanges,
+      };
+      // update all series and guitars of the model with the new model name
+      // and/or new brand
+      Series.updateMany(
+        { model: originalModel.model, brand: originalModel.brand },
+        changedModel
+      ).exec((err) => {
         if (err) {
           return next(err);
         }
-        if (sameModel) {
-          res.redirect(`../../../brands/${brand.name}/${req.body.model}`);
-        } else {
-          // update both model name and brand
-          let updateDocument = {
-            $set: { model: req.body.model, brand: brand._id },
-          };
-
-          // Check if model name is the same but brand changed
-          if (originalModel.model == req.body.model) {
-            // update brand
-            updateDocument = {
-              $set: { brand: brand._id },
-            };
-          }
-
-          // Check if brand is the same but model name changed
-          if (originalModel.brand == brand._id) {
-            // update model name
-            updateDocument = {
-              $set: { model: req.body.model },
-            };
-          }
-
-          // find and update all series and guitar instances of the model
-          Series.updateMany(
-            { model: originalModel.model },
-            updateDocument
-          ).exec((err) => {
-            if (err) {
-              return next(err);
-            }
-          });
-
-          GuitarInstance.updateMany(
-            { model: originalModel.model },
-            updateDocument
-          ).exec((err) => {
-            if (err) {
-              return next(err);
-            }
-          });
-          // update the one model
-          Guitar.updateOne({ model: originalModel.model }, updateDocument).exec(
-            (err) => {
-              if (err) {
-                return next(err);
-              }
-              // redirect to the new page
-              console.log('model updated');
-              res.redirect(`../../../brands/${brand.name}/${req.body.model}`);
-            }
-          );
+      });
+      GuitarInstance.updateMany(
+        { model: originalModel.model, brand: originalModel.brand },
+        changedModel
+      ).exec((err) => {
+        if (err) {
+          return next(err);
         }
+      });
+    }
+
+    // Check if description needs to update
+    if (originalModel.description != req.body.description) {
+      updates.description = req.body.description;
+    }
+    let updateDocument = {
+      $set: updates,
+    };
+    // update the one model
+    Guitar.updateOne(
+      { model: originalModel.model, brand: originalModel.brand },
+      updateDocument
+    ).exec((err) => {
+      if (err) {
+        return next(err);
       }
-    );
+      // redirect to the new page
+      console.log('model updated');
+      res.redirect(`../../../brands/${brand.name}/${req.body.model}`);
+    });
   },
 ];
 
