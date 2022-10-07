@@ -301,6 +301,7 @@ exports.guitar_delete_get = async (req, res, next) => {
   res.render('guitar_instance_delete', {
     brand: brand.name,
     model: guitarInstance.model,
+    serialNum: guitarInstance.serialNum,
     id: req.params.id,
     series: guitarInstance.series,
     title: `Delete ${brand.name} - ${guitarInstance.model} - ${guitarInstance.series} - Serial Number: ${guitarInstance.serialNum} Guitar`,

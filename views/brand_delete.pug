@@ -5,28 +5,31 @@ block content
   h1= title
 
   if (del == true)
-    h3= 'Are you sure you want to delete ' + brand + ' brand?'
+    h3= 'Are you sure you want to delete?'
     form(method='POST' action='')
       input(type='hidden', name='brandid', required='true', value=id)
-      button(type='submit') confirm
+      div
+        button(type='submit') Confirm
+        button(type='button') 
+            a(href='./') Cancel
   else 
     h3= 'Unable to delete. You must delete the following:'
 
-  if instances.length
+  if instances && instances.length
     h4= 'Guitars: '
     ul
       each guitar in instances
         li
           a(href=`/brands/${brand}/${guitar.model}/${guitar.series}/${guitar.serialNum}`) #{`${guitar.series} - ${guitar.color}`}
 
-  if series.length
+  if series && series.length
     h4= 'Series: '
     ul
       each ser in series
         li
           a(href=`/brands/${brand}/${ser.model}/${ser.series}`) #{ser.series}
 
-  if guitarModels.length
+  if guitarModels && guitarModels.length
     h4= 'Models: '
     ul
       each mod in guitarModels

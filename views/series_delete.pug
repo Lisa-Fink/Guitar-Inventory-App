@@ -5,10 +5,13 @@ block content
   h1= title
 
   if (del == true)
-    h3= `Are you sure you want to delete ${brand} - ${model} - ${series} Series?`
+    h3= `Are you sure you want to delete?`
     form(method='POST' action='')
-      input(type='hidden', name='seriesID', required='true', value=id)
-      button(type='submit') confirm
+        input(type='hidden', name='seriesID', required='true', value=id)
+        div
+            button(type='submit') Confirm
+            button(type='button') 
+                a(href=`../../../brands/${brand}/${model}`) Cancel
   else 
     h3= 'Unable to delete. You must delete the following:'
 

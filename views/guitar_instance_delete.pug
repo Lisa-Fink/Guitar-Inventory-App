@@ -5,7 +5,10 @@ block content
     h1= title
 
 
-    h3= `Are you sure you want to delete ${title}?`
+    h3= `Are you sure you want to delete?`
     form(method='POST' action='')
         input(type='hidden', name='guitarInstanceID', required='true', value=id)
-        button(type='submit') confirm
+        div
+            button(type='submit') Confirm
+            button(type='button') 
+                a(href=`../../brands/${brand}/${model}/${series}/${serialNum}`) Cancel

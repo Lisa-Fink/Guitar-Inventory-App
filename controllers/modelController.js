@@ -4,8 +4,6 @@ const GuitarInstance = require('../models/guitarInstance');
 const Series = require('../models/series');
 
 const { body, validationResult } = require('express-validator');
-const brand = require('../models/brand');
-const { Model } = require('mongoose');
 
 exports.model_list = async (req, res, next) => {
   const brandList = await Brand.find({}, { name: 1 });
